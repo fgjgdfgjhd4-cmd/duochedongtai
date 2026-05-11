@@ -110,9 +110,11 @@ def test():
         for t in range(1, max_ep_len + 1):
             # adjust the probability of three strategies
             actions = {}
-            probabilities = ppo_agent.select_action(rgb_array_transposed)
-            probabilities = probabilities.cpu().numpy()
-            probabilities = [round(value, 3) for value in probabilities.flat]
+            probabilities, strategy_index, raw_action_probs = ppo_agent.select_strategy_profile(
+                rgb_array_transposed,
+                deterministic=True,
+            )
+            probabilities = [round(value, 3) for value in probabilities]
 
             abc_for_map.set_probability(probabilities)
             temp = abc_for_map.optimize()

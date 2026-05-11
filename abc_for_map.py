@@ -2,32 +2,15 @@
 ABC FOR MAP
 """
 import numpy as np
-import pygame.surfarray
-from CNN_PPO import PPO
-import cv2
 from original_artificial_bee_colony.food_source import FoodSource
 
-from original_artificial_bee_colony.food_source import FoodSource
 from map import Map
 import math
 import random
 from operator import attrgetter
 import copy
-from itertools import cycle, islice, chain
-import torch
-import pprint as pp
-import time
-
-env = Map(agent_num=10, render_mode="human")
-
-# 根据agent数量设置lb和ub
-lower_bound = [200, -math.pi / 2]
-upper_bound = [400, math.pi / 2]
-repeated_iter = cycle(lower_bound)
-fn_lb = list(islice(repeated_iter, len(lower_bound) * env.agent_num))
-
-repeated_iter = cycle(upper_bound)
-fn_ub = list(islice(repeated_iter, len(upper_bound) * env.agent_num))
+from itertools import cycle, islice
+from experiment_utils import repair_candidate_solution
 
 
 class ABC(object):
@@ -79,13 +62,20 @@ class ABC(object):
 
     def set_probability(self, probabilities):
         """根据probabilities设置三个策略的初始概率"""
-        self.p_1 = probabilities[0]
-        self.p_2 = probabilities[1]
-        self.p_3 = probabilities[2]
+        probabilities = np.array(probabilities, dtype=float)
+        total = float(np.sum(probabilities))
+        if total <= 0:
+            probabilities = np.array([1 / 3, 1 / 3, 1 / 3], dtype=float)
+        else:
+            probabilities = probabilities / total
+        self.p_1 = float(probabilities[0])
+        self.p_2 = float(probabilities[1])
+        self.p_3 = float(probabilities[2])
 
     def optimize(self):
 
         self.initialize()
+        self.strategy_counts = [0, 0, 0]
         # pp.pprint(self.food_sources)
 
         for n_run in range(1, self.nruns + 1):
@@ -136,10 +126,8 @@ class ABC(object):
             food_source = self.food_sources[i]
 
             if food_source.trials > self.trials_limit:
-                food_source = self.create_foodsource()
-                food_source.fitness = self.fitness_for_abc(food_source.solution)
+                self.food_sources[i] = self.create_foodsource()
                 self.FES += 1
-                food_source.trials = 0
 
     def global_best_solution(self):
         fitnesses = [fs.fitness for fs in self.food_sources]
@@ -214,6 +202,7 @@ class ABC(object):
 
         """根据概率选择"""
         if prob_for_onlooker <= self.p_1:
+            self.strategy_counts[0] += 1
             # spiral approximation strategy
             global_best_solution = self.global_best_solution()
             b = 1 - self.FES / self.FESmax
@@ -226,6 +215,7 @@ class ABC(object):
 
 
         elif prob_for_onlooker <= self.p_1 + self.p_2:
+            self.strategy_counts[1] += 1
             # global and neighborhood best guide strategy
             global_best_solution = self.global_best_solution()
 
@@ -250,6 +240,7 @@ class ABC(object):
                 new_solution[d] = np.round(new_solution[d], 2)
 
         else:
+            self.strategy_counts[2] += 1
             F = round(np.random.uniform(-1, 1), 2)
             idx_1 = self.random_solution_excluding([current_solution_index])
             idx_2 = self.random_solution_excluding([current_solution_index, idx_1])
@@ -325,63 +316,25 @@ class ABC(object):
 
         best = max(self.food_sources, key=attrgetter('fitness'))
 
-        # 判断最佳方案里面是否会有导致车碰撞的动作，如果有，则将这个车的动作变成1
-        actions = best.solution
-        positions = copy.deepcopy(self.env.agent_positions)
-        for i in range(len(self.env.possible_agents)):
-            agent = self.env.possible_agents[i]
-            if self.env.terminations[agent] is True or self.env.collisions[agent] is True:
-                continue
-
-            orientation_new = self.env.orientation[agent] + actions[2 * i + 1]
-            positions[agent][0] += np.cos(orientation_new) * actions[2 * i]
-            positions[agent][1] += np.sin(orientation_new) * actions[2 * i]
-
-            if any(positions[agent] <= 0 + self.env.safe_distance / 2) or \
-                    any(positions[agent] >= self.env.screen_width - self.env.safe_distance / 2):
-                best.solution[2 * i] = -1
-                best.solution[2 * i + 1] = np.random.uniform(-math.pi / 4, 0)
-                self.env.obj_ratio[agent] += 0.1
-                continue
-
-            for obs_idx in range(len(self.env.obstacle_centers)):
-
-                """由于把机器人看成圆，探测碰撞的范围会变大，因此在图中车和障碍物可能不会碰撞"""
-                if np.linalg.norm(self.env.obstacle_centers[obs_idx] - positions[agent]) <= self.env.radius[obs_idx] + \
-                        self.env.safe_distance / 2:
-                    best.solution[2 * i] = -1
-                    best.solution[2 * i + 1] = np.random.uniform(-math.pi/4, 0)
-                    self.env.obj_ratio[agent] += 0.1
-                    break
-
-            for obs_idx in range(len(self.env.rec_center)):
-                current_obs_center = self.env.rec_center[obs_idx]
-                current_obs_size = self.env.rec_size[obs_idx]
-
-                if abs(positions[agent][0] - current_obs_center[0]) <= current_obs_size[0] / 2 + self.env.safe_distance / 2 and \
-                   abs(positions[agent][1] - current_obs_center[1]) <= current_obs_size[1] / 2 + self.env.safe_distance / 2:
-                    best.solution[2 * i] = -1
-                    best.solution[2 * i + 1] = np.random.uniform(-math.pi/4, 0)
-                    self.env.obj_ratio[agent] += 0.1
-                    break
-
-        # 希望等所有的位置都更新完后再判断车之间是否撞
-        for i in range(len(self.env.agents)):
-            agent = self.env.agents[i]
-            for j in range(i + 1, len(self.env.agents)):
-                other_agent = self.env.agents[j]
-                if np.linalg.norm(positions[agent] - positions[other_agent]) < self.env.safe_distance / 2:
-                    best.solution[2 * i] = -1
-                    best.solution[2 * i + 1] = np.random.uniform(-math.pi/4, 0)
-                    self.env.obj_ratio[agent] += 0.1
-
-                    best.solution[2 * i] = -1
-                    best.solution[2 * i + 1] = np.random.uniform(-math.pi/4, 0)
-                    self.env.obj_ratio[other_agent] += 0.1
+        best.solution = repair_candidate_solution(best.solution, self.env)
         return best
+
+        # 判断最佳方案里面是否会有导致车碰撞的动作，如果有，则将这个车的动作变成1
+
 
 
 def main():
+    from CNN_PPO import PPO
+    import torch
+
+    env = Map(agent_num=10, render_mode="human")
+    lower_bound = [200, -math.pi / 2]
+    upper_bound = [400, math.pi / 2]
+    repeated_iter = cycle(lower_bound)
+    fn_lb = list(islice(repeated_iter, len(lower_bound) * env.agent_num))
+    repeated_iter = cycle(upper_bound)
+    fn_ub = list(islice(repeated_iter, len(upper_bound) * env.agent_num))
+
     abc_for_map = ABC(30, 29, env.objective, fn_lb=fn_lb, fn_ub=fn_ub, env=env)
     ppo_agent = PPO(3, 0.0003, 0.001, 0.99, 80, 0.2, False, 0.6)
     # cnn = CNN()

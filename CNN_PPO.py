@@ -185,7 +185,7 @@ class ActorCritic(nn.Module):
                 nn.Flatten(),
                 nn.Dropout(p=0.1),
                 nn.Linear(200 * 200 * 16, 32),
-                nn.Relu(inplace=True),
+                nn.ReLU(inplace=True),
                 nn.Linear(32, 16),
                 nn.ReLU(inplace=True),
                 nn.Dropout(p=0.1),
@@ -358,8 +358,8 @@ class PPO:
         # ])
 
         self.optimizer = torch.optim.RMSprop([
-            {'params': self.policy.actor.parameters(), 'lr': lr_actor},
-            {'params': self.policy.critic.parameters(), 'lr': lr_critic},
+            {'params': self.policy.actor.parameters(), 'lr': lr_actor, 'name': 'actor'},
+            {'params': self.policy.critic.parameters(), 'lr': lr_critic, 'name': 'critic'},
         ])
 
         self.policy_old = ActorCritic(action_dim, has_continuous_action_space, action_std_init).to(device)
@@ -384,9 +384,9 @@ class PPO:
         actor_new_lr = max(0.0001, 0.0003 * training_frac)
         critic_new_lr = max(0.0003, 0.001 * training_frac)
         for param_group in self.optimizer.param_groups:
-            if 'actor' in param_group['params'][0].__module__:  # 假设可以根据模块名区分 actor 和 critic
+            if param_group.get('name') == 'actor':
                 param_group['lr'] = actor_new_lr
-            elif 'critic' in param_group['params'][0].__module__:  # 假设可以根据模块名区分 actor 和 critic
+            elif param_group.get('name') == 'critic':
                 param_group['lr'] = critic_new_lr
 
     def decay_action_std(self, action_std_decay_rate, min_action_std):
@@ -433,6 +433,36 @@ class PPO:
             self.buffer.state_values.append(state_val)
 
             return probabilities
+
+    def select_strategy_profile(self, state, profiles=None, deterministic=False):
+        if profiles is None:
+            profiles = np.array(
+                [
+                    [0.70, 0.15, 0.15],
+                    [0.15, 0.70, 0.15],
+                    [0.15, 0.15, 0.70],
+                ],
+                dtype=np.float32,
+            )
+
+        if self.has_continuous_action_space:
+            raise ValueError("Strategy-profile scheduling expects a discrete PPO policy.")
+
+        state = state.to(device)
+        with torch.no_grad():
+            action_probs = self.policy_old.actor(state)
+            dist = Categorical(action_probs)
+            action_for_train = torch.argmax(action_probs, dim=-1) if deterministic else dist.sample()
+            action_logprob = dist.log_prob(action_for_train)
+            state_val = self.policy_old.critic(state)
+
+        self.buffer.states.append(state)
+        self.buffer.actions.append(action_for_train.detach())
+        self.buffer.logprobs.append(action_logprob.detach())
+        self.buffer.state_values.append(state_val.detach())
+
+        action_index = int(action_for_train.detach().cpu().reshape(-1)[0])
+        return profiles[action_index].tolist(), action_index, action_probs.detach().cpu().numpy().flatten()
 
     def update(self):
         # Monte Carlo estimate of returns

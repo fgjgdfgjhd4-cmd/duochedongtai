@@ -222,9 +222,8 @@ def train():
         for t in range(1, max_ep_len + 1):
             # adjust the probability of three strategies
             actions = {}
-            probabilities = ppo_agent.select_action(rgb_array_transposed)
-            probabilities = probabilities.cpu().numpy()
-            probabilities = [round(value, 3) for value in probabilities.flat]
+            probabilities, strategy_index, raw_action_probs = ppo_agent.select_strategy_profile(rgb_array_transposed)
+            probabilities = [round(value, 3) for value in probabilities]
 
             abc_for_map.set_probability(probabilities)
             temp = abc_for_map.optimize()
@@ -284,6 +283,8 @@ def train():
             current_ep_reward += reward
             logger.info("Map Index: {}".format(env.map_index))
             logger.info("Probabilities: {}".format(probabilities))
+            logger.info("Strategy Index: {}".format(strategy_index))
+            logger.info("Raw Action Probabilities: {}".format(raw_action_probs))
             logger.info("Actions: {}".format(actions))
             logger.info("Destinations: {}".format(env.destinations))
             logger.info("Current Positions: {}".format(env.agent_positions))
