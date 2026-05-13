@@ -1,7 +1,10 @@
 import functools
 import random
 from datetime import datetime
-import cv2
+try:
+    import cv2
+except ImportError:
+    cv2 = None
 import gym
 import numpy as np
 import copy
@@ -10,7 +13,11 @@ import math
 from gymnasium.spaces import Box
 from original_artificial_bee_colony.lib import target_toward_distance, Repulsive, intersect_ray_with_rectangle
 
-from pettingzoo import ParallelEnv
+try:
+    from pettingzoo import ParallelEnv
+except ImportError:
+    class ParallelEnv:
+        pass
 
 
 class Map(ParallelEnv):
@@ -475,6 +482,12 @@ class Map(ParallelEnv):
     # 利用AABB法判断三角形障碍物和无人车是否相撞
 
 
+    def objective_batch_torch(self, candidate_solutions, device=None):
+        """GPU-friendly batch objective helper for tensorized ABC variants."""
+        from gpu_objective import objective_batch_torch
+
+        return objective_batch_torch(candidate_solutions, self, device=device)
+
     def step(self, actions):
         self.timestep += 1
 
@@ -793,7 +806,10 @@ class Map(ParallelEnv):
                 # hsv
                 # 三个维度按顺序为x, y, channel
                 rgb_array_for_return = pygame.surfarray.pixels3d(self.screen)
-                hsv_array = cv2.cvtColor(rgb_array_for_return, cv2.COLOR_RGB2HSV)
+                if cv2 is None:
+                    hsv_array = rgb_array_for_return
+                else:
+                    hsv_array = cv2.cvtColor(rgb_array_for_return, cv2.COLOR_RGB2HSV)
 
                 for agent in self.agents:
                     x = round(self.agent_positions[agent][0])
@@ -811,7 +827,10 @@ class Map(ParallelEnv):
             # hsv
             # 三个维度按顺序为x, y, channel
             rgb_array_for_return = pygame.surfarray.pixels3d(self.screen)
-            hsv_array = cv2.cvtColor(rgb_array_for_return, cv2.COLOR_RGB2HSV)
+            if cv2 is None:
+                hsv_array = rgb_array_for_return
+            else:
+                hsv_array = cv2.cvtColor(rgb_array_for_return, cv2.COLOR_RGB2HSV)
 
             for agent in self.agents:
                 x = int(self.agent_positions[agent][0])

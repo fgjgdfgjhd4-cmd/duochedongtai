@@ -10,7 +10,7 @@ import random
 from operator import attrgetter
 import copy
 from itertools import cycle, islice
-from experiment_utils import repair_candidate_solution
+from experiment_utils import conflict_aware_search_guidance, repair_candidate_solution
 
 
 class ABC(object):
@@ -19,7 +19,9 @@ class ABC(object):
     food_sources = []
 
     def __init__(self, npopulation, nruns, fn_eval, *, trials_limit=50,
-                 employed_bees_percentage=0.5, fn_lb, fn_ub, env):
+                 employed_bees_percentage=0.5, fn_lb, fn_ub, env,
+                 conflict_aware_repair=False, conflict_aware_search=False,
+                 use_gpu_eval=False):
         super(ABC, self).__init__()
         self.npopulation = npopulation
         self.nruns = nruns
@@ -48,6 +50,9 @@ class ABC(object):
         self.FESmax = 3000
 
         self.env = env
+        self.conflict_aware_repair = conflict_aware_repair
+        self.conflict_aware_search = conflict_aware_search
+        self.use_gpu_eval = use_gpu_eval
 
         """如果网络输出的是策略编号"""
         self.strategy_index = 0
@@ -55,6 +60,8 @@ class ABC(object):
         # 概率分界点
         self.p_1 = 1.0 / 3.0
         self.p_2 = 1.0 / 3.0
+        self.p_3 = 1.0 / 3.0
+        self.agent_probabilities = None
 
     def set_strategy_index(self, index):
         """人工设置选取的策略编号"""
@@ -71,6 +78,34 @@ class ABC(object):
         self.p_1 = float(probabilities[0])
         self.p_2 = float(probabilities[1])
         self.p_3 = float(probabilities[2])
+        self.agent_probabilities = None
+
+    def set_agent_probabilities(self, agent_probabilities):
+        """Set an independent strategy profile for each active agent."""
+        normalized = {}
+        for agent, probabilities in agent_probabilities.items():
+            probabilities = np.array(probabilities, dtype=float)
+            total = float(np.sum(probabilities))
+            if total <= 0:
+                probabilities = np.array([1 / 3, 1 / 3, 1 / 3], dtype=float)
+            else:
+                probabilities = probabilities / total
+            normalized[agent] = probabilities[:3]
+        self.agent_probabilities = normalized
+
+    def strategy_probabilities_for_dimension(self, dimension):
+        if self.agent_probabilities is None:
+            return np.array([self.p_1, self.p_2, self.p_3], dtype=float)
+
+        agent_index = dimension // 2
+        if agent_index >= len(self.env.possible_agents):
+            return np.array([self.p_1, self.p_2, self.p_3], dtype=float)
+
+        agent = self.env.possible_agents[agent_index]
+        return self.agent_probabilities.get(
+            agent,
+            np.array([self.p_1, self.p_2, self.p_3], dtype=float),
+        )
 
     def optimize(self):
 
@@ -260,6 +295,66 @@ class ABC(object):
         # new_solution[d] = max(min(self.fn_ub[d], new_solution[d]), self.fn_lb[d])
         # return np.around(new_solution, decimals=4)
 
+    def generate_solution_for_onlooker(self, current_solution_index, prob_for_onlooker):
+        """Generate an onlooker solution with optional per-agent profiles.
+
+        This method intentionally appears after the legacy implementation so it
+        overrides it inside the class while keeping the old code available for
+        comparison.
+        """
+        solution = self.food_sources[current_solution_index].solution
+        random_dimensions = []
+        for i in range(len(self.env.agents)):
+            agent = self.env.agents[i]
+            if self.env.terminations[agent] is True or self.env.collisions[agent] is True:
+                continue
+            random_dimensions.append(random.randint(2 * i, 2 * i + 1))
+
+        new_solution = np.copy(solution)
+        global_best_solution = self.global_best_solution()
+        b = 1 - self.FES / self.FESmax
+
+        r_1 = self.random_solution_excluding([current_solution_index])
+        random_solution = self.food_sources[r_1].solution
+        phi_1 = round(np.random.uniform(-1, 1), 2)
+        phi_2 = round(np.random.uniform(-1, 1), 2)
+        obj_current = self.env.objective(solution)
+        obj_random = self.env.objective(random_solution)
+        c_1 = (obj_current - obj_random) / (obj_current + obj_random + 0.001)
+        c_2 = 2 * self.food_sources[current_solution_index].trials / self.trials_limit
+        c_3 = 2 * (1 - self.food_sources[current_solution_index].trials / self.trials_limit)
+
+        idx_1 = self.random_solution_excluding([current_solution_index])
+        idx_2 = self.random_solution_excluding([current_solution_index, idx_1])
+        F = round(np.random.uniform(-1, 1), 2)
+
+        for d in random_dimensions:
+            probabilities = self.strategy_probabilities_for_dimension(d)
+            p_1, p_2 = probabilities[0], probabilities[1]
+            if prob_for_onlooker <= p_1:
+                self.strategy_counts[0] += 1
+                r = round(np.random.uniform(-1, 1), 2)
+                new_solution[d] = global_best_solution[d] + abs(global_best_solution[d] - new_solution[d]) * \
+                                  np.exp(b * r) * np.cos(2 * math.pi * r)
+            elif prob_for_onlooker <= p_1 + p_2:
+                self.strategy_counts[1] += 1
+                neighbor_best_solution = self.neighbor_best_solution(current_solution_index, d)
+                new_solution[d] = solution[d] + c_1 * phi_1 * (random_solution[d] - solution[d]) + c_2 * phi_2 * \
+                                  (global_best_solution[d] - solution[d]) + c_3 * (
+                                              neighbor_best_solution[d] - solution[d])
+            else:
+                self.strategy_counts[2] += 1
+                new_solution[d] = solution[d] + F * (self.food_sources[idx_1].solution[d] - \
+                                                     self.food_sources[idx_2].solution[d])
+            new_solution[d] = np.round(new_solution[d], 2)
+
+        if self.conflict_aware_search:
+            new_solution = conflict_aware_search_guidance(new_solution, self.env)
+
+        for i in range(len(new_solution)):
+            new_solution[i] = max(min(self.fn_ub[i], new_solution[i]), self.fn_lb[i])
+        return np.round(new_solution, decimals=2)
+
     def create_foodsource(self):
         solution = self.candidate_solution(self.fn_lb, self.fn_ub)
         fitness = self.fitness_for_abc(solution)
@@ -281,10 +376,20 @@ class ABC(object):
         return selected
 
     def best_solution(self, current_solution, new_solution):
-        if self.env.objective(new_solution) < self.env.objective(current_solution):
+        current_obj, new_obj = self.objective_values([current_solution, new_solution])
+        if new_obj < current_obj:
             return new_solution
         else:
             return current_solution
+
+    def objective_values(self, solutions):
+        if self.use_gpu_eval and hasattr(self.env, "objective_batch_torch"):
+            try:
+                values = self.env.objective_batch_torch(np.array(solutions, dtype=float))
+                return values.detach().cpu().numpy()
+            except Exception:
+                pass
+        return np.array([self.env.objective(solution) for solution in solutions], dtype=float)
 
     def probability(self, food_source):
         fitness_sum = sum([fs.fitness for fs in self.food_sources])
@@ -293,7 +398,7 @@ class ABC(object):
         return probability
 
     def fitness_for_abc(self, solution):
-        result = self.env.objective(solution)
+        result = self.objective_values([solution])[0]
 
         if result >= 0:
             fitness = 1 / (1 + result)
@@ -310,13 +415,18 @@ class ABC(object):
             food_source.trials += 1
         else:
             food_source.solution = new_solution
+            food_source.fitness = self.fitness_for_abc(new_solution)
             food_source.trials = 0
 
     def best_source(self):
 
         best = max(self.food_sources, key=attrgetter('fitness'))
 
-        best.solution = repair_candidate_solution(best.solution, self.env)
+        best.solution = repair_candidate_solution(
+            best.solution,
+            self.env,
+            use_conflict_aware=self.conflict_aware_repair,
+        )
         return best
 
         # 判断最佳方案里面是否会有导致车碰撞的动作，如果有，则将这个车的动作变成1

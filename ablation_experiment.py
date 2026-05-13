@@ -13,6 +13,7 @@ from CNN_PPO import PPO
 from Compare_Method_ABC.swarm import ABC_origin
 from experiment_utils import (
     EpisodeResult,
+    agent_manual_probabilities,
     expand_bounds,
     manual_probabilities,
     sample_start_targets,
@@ -22,9 +23,19 @@ from experiment_utils import (
     write_summary,
 )
 from map import Map
+from structured_mlp_ppo import StructuredMLPPPO
 
 
-ALGORITHMS = ("origin_abc", "fixed_iabc", "manual_iabc", "ppo_iabc")
+ALGORITHMS = (
+    "origin_abc",
+    "fixed_iabc",
+    "manual_iabc",
+    "agent_manual_iabc",
+    "conflict_repair_iabc",
+    "conflict_search_iabc",
+    "structured_mlp_iabc",
+    "ppo_iabc",
+)
 
 
 def build_optimizer(algorithm, env, population, runs, fn_lb, fn_ub):
@@ -44,6 +55,9 @@ def build_optimizer(algorithm, env, population, runs, fn_lb, fn_ub):
         fn_lb=fn_lb,
         fn_ub=fn_ub,
         env=env,
+        conflict_aware_repair=algorithm in ("conflict_repair_iabc", "conflict_search_iabc"),
+        conflict_aware_search=algorithm == "conflict_search_iabc",
+        use_gpu_eval=algorithm in ("conflict_repair_iabc", "conflict_search_iabc", "structured_mlp_iabc"),
     )
 
 
@@ -63,6 +77,10 @@ def build_ppo(args):
     return ppo
 
 
+def build_structured_mlp(args):
+    return StructuredMLPPPO(checkpoint=args.structured_checkpoint)
+
+
 def render_state(env):
     frame = env.render()
     state = np.transpose(frame, (2, 0, 1))
@@ -75,6 +93,14 @@ def select_probabilities(algorithm, optimizer, ppo, state, env):
         probabilities = [1 / 3, 1 / 3, 1 / 3]
     elif algorithm == "manual_iabc":
         probabilities = manual_probabilities(env)
+    elif algorithm in ("agent_manual_iabc", "conflict_repair_iabc", "conflict_search_iabc"):
+        probabilities = agent_manual_probabilities(env)
+        optimizer.set_agent_probabilities(probabilities)
+        return probabilities
+    elif algorithm == "structured_mlp_iabc":
+        probabilities = ppo.select_agent_strategy_profiles(env, deterministic=True)
+        optimizer.set_agent_probabilities(probabilities)
+        return probabilities
     elif algorithm == "ppo_iabc":
         probabilities, _, _ = ppo.select_strategy_profile(state, deterministic=False)
     else:
@@ -95,7 +121,12 @@ def run_episode(args, algorithm, episode_index, map_index, agent_num, starts, ta
 
     fn_lb, fn_ub = expand_bounds(agent_num, args.lower_bound, args.upper_bound)
     optimizer = build_optimizer(algorithm, env, args.population, args.runs, fn_lb, fn_ub)
-    ppo = build_ppo(args) if algorithm == "ppo_iabc" else None
+    if algorithm == "ppo_iabc":
+        ppo = build_ppo(args)
+    elif algorithm == "structured_mlp_iabc":
+        ppo = build_structured_mlp(args)
+    else:
+        ppo = None
 
     state = render_state(env) if algorithm == "ppo_iabc" else None
     total_reward = 0.0
@@ -142,7 +173,7 @@ def run_episode(args, algorithm, episode_index, map_index, agent_num, starts, ta
             timeout = False
             break
 
-    if ppo is not None:
+    if algorithm == "ppo_iabc" and ppo is not None:
         ppo.buffer.clear()
 
     collision = any(env.collisions.values())
@@ -195,6 +226,7 @@ def parse_args():
     parser.add_argument("--upper-bound", nargs=2, type=float, default=[20.0, np.pi / 4])
     parser.add_argument("--render-mode", default="rgb_array", choices=["rgb_array", "human"])
     parser.add_argument("--checkpoint", default="")
+    parser.add_argument("--structured-checkpoint", default="")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--output-dir", default="ablation_results")
 
@@ -211,7 +243,8 @@ def parse_args():
 def main():
     args = parse_args()
     if "ppo_iabc" in args.algorithms and not args.checkpoint:
-        raise ValueError("--checkpoint is required when running ppo_iabc.")
+        args.algorithms = [algorithm for algorithm in args.algorithms if algorithm != "ppo_iabc"]
+        print("Skipping ppo_iabc because --checkpoint was not provided.")
 
     random.seed(args.seed)
     np.random.seed(args.seed)
