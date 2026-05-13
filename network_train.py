@@ -71,7 +71,7 @@ def train():
 
     print("training environment name: " + env_name)
 
-    env = Map(agent_num=5, render_mode="rgb_array")
+    env = Map(agent_num=10, render_mode="rgb_array")
     seed = 42
     torch.manual_seed(seed=seed)
 
@@ -91,7 +91,7 @@ def train():
     fn_ub = list(islice(repeated_iter, len(upper_bound) * env.agent_num))
 
     # artificial bee colony
-    abc_for_map = ABC(60, 59, env.objective, fn_lb=fn_lb, fn_ub=fn_ub, env=env)
+    abc_for_map = ABC(15, 15, env.objective, fn_lb=fn_lb, fn_ub=fn_ub, env=env)
 
     success_ep_num = 0
 
@@ -134,7 +134,7 @@ def train():
     # if not os.path.exists(directory):
     #     os.makedirs(directory)
 
-    directory = directory + '/' + env_name + '/' + 'HSV' + '/' + timestamp
+    directory = directory + '/' + env_name + '/' + '10_robots' + '/' + timestamp
     if not os.path.exists(directory):
         os.makedirs(directory)
 

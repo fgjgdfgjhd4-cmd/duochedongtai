@@ -1,584 +1,434 @@
-import copy
+#!/usr/bin/env python3
+"""Algorithm comparison test: PPO-ABC vs ABC vs PSO vs CPSO vs ABCL.
 
-from abc_for_map import ABC
-from map import Map
-from CNN_PPO import PPO
+Refactored to support CLI arguments, multiple maps, multiple episodes,
+and CSV output using experiment_utils.
+"""
+
+import argparse
+import csv
+import math
 import os
-import glob
+import random
 import time
+from collections import defaultdict
 from datetime import datetime
 from itertools import cycle, islice
-import math
-import cv2
-import matplotlib.pyplot as plt
-import random
-from torch.distributions import Categorical
-import time
-import torch
+
 import numpy as np
-import logging
-import os
+import torch
+
+from abc_for_map import ABC
+from CNN_PPO import PPO
 from Compare_Method_ABC.swarm import ABC_origin
-from Compare_Method_PSO.PSO_map import PSO
+from Compare_Method_PSO.PSO_map import PSO as PSOAlgo
 from CPSO.CPSO_map import CPSO
 from Compare_Method_ABCL.ABCL_MAP import ABCL
-import pygame
-
-"""
-这个是考虑到需要保证不同算法的测试环境和条件应该相同
-"""
-
-#################################### Testing ###################################
-def test():
-    print("============================================================================================")
-
-    # 清理不必要进程
-    torch.cuda.empty_cache()
-
-    env_name = "Map"
-    has_continuous_action_space = False  # 输出的动作为各个方案的概率
-
-    max_ep_len = 200  # max timesteps in one episode
-
-    action_std = 0.1  # starting std for action distribution (Multivariate Normal)
-    action_std_decay_rate = 0.05  # linearly decay action_std (action_std = action_std - action_std_decay_rate)
-
-    total_test_episodes = 15  # total num of testing episodes
-    K_epochs = 80  # update policy for K epochs
-
-    eps_clip = 0.2  # clip param for PPO
-    gamma = 0.99  # discount factor
-
-    lr_actor = 0.0003  # learning rate for actor network
-    lr_critic = 0.001  # learning rate for critic network
-
-    print("testing environment name: " + env_name)
-
-    # 5
-    # checkpoint_path = "./PPO_preTrained/Map/5_robots/PPO_Map_4500.pth"
-    # env = Map(agent_num=5, render_mode="human", test_result_save=True)
-    #
-    # seed = 42
-    # torch.manual_seed(seed=seed)
-    #
-    # map_index = 2
-    # initial_starts_map_1_robots_5 = [np.array([265, 670]), np.array([265, 130]), np.array([265, 400]),
-    #                                  np.array([130, 535]), np.array([130, 265])]
-    # initial_targets_map_1_robots_5 = [np.array([670, 535]), np.array([670, 265]), np.array([535, 400]),
-    #                                   np.array([535, 670]), np.array([535, 130])]
-    #
-    # initial_starts_map_2_robots_5 = [np.array([100, 100]), np.array([700, 700]), np.array([100, 700]),
-    #                                  np.array([700, 100]), np.array([150, 150])]
-    # initial_targets_map_2_robots_5 = [np.array([400, 520]), np.array([400, 280]), np.array([280, 400]),
-    #                                   np.array([520, 400]), np.array([400, 400])]
-    #
-    # initial_starts_map_3_robots_5 = [np.array([285, 400]), np.array([65, 290]), np.array([65, 510]),
-    #                                  np.array([285, 630]), np.array([285, 170])]
-    # initial_targets_map_3_robots_5 = [np.array([750, 400]), np.array([525, 170]), np.array([525, 630]),
-    #                                   np.array([750, 510]), np.array([750, 290])]
-
-    # 10
-    checkpoint_path = "./PPO_preTrained/Map/10_robots/0115-09-31PPO_Map_4500.pth"
-    env = Map(agent_num=10, render_mode="human", test_result_save=True)
-
-    seed = 42
-    torch.manual_seed(seed=seed)
-
-    map_index = 2
-
-    initial_starts_map_1_robots_10 = [np.array([265, 670]), np.array([265, 620]),
-                                      np.array([265, 450]), np.array([265, 350]),
-                                      np.array([265, 180]), np.array([265, 130]),
-                                      np.array([130, 585]), np.array([130, 485]),
-                                      np.array([130, 315]), np.array([130, 215])]
+from experiment_utils import (
+    EpisodeResult,
+    expand_bounds,
+    sample_start_targets,
+    solution_to_actions,
+    summarize_results,
+    write_episode_results,
+    write_summary,
+)
+from map import Map
 
 
-    initial_targets_map_1_robots_10 = [np.array([670, 585]), np.array([670, 485]),
-                                       np.array([535, 450]), np.array([535, 350]),
-                                       np.array([670, 315]), np.array([670, 215]),
-                                       np.array([535, 720]), np.array([535, 620]),
-                                       np.array([535, 180]), np.array([535, 130])]
-
-    initial_starts_map_2_robots_10 = [np.array([100, 100]), np.array([700, 700]), np.array([100, 700]),
-                                      np.array([700, 100]), np.array([150, 650]), np.array([650, 150]),
-                                      np.array([650, 650]), np.array([150, 100]), np.array([200, 400]),
-                                      np.array([600, 400])]
-
-    initial_targets_map_2_robots_10 = [np.array([400, 520]), np.array([400, 280]), np.array([280, 400]),
-                                       np.array([520, 400]), np.array([200, 200]), np.array([200, 600]),
-                                       np.array([600, 200]), np.array([600, 600]), np.array([450, 400]),
-                                       np.array([350, 400])]
-
-    # initial_starts_map_3_robots_10 = [np.array([65, 400]), np.array([65, 510]), np.array([65, 290]),
-    #                                   np.array([150, 510]), np.array([150, 290]), np.array([275, 650]),
-    #                                   np.array([275, 510]), np.array([275, 400]), np.array([275, 290]),
-    #                                   np.array([275, 150])]
-    #
-    # initial_targets_map_3_robots_10 = [np.array([525, 400]), np.array([525, 510]), np.array([525, 290]),
-    #                                    np.array([525, 650]), np.array([525, 150]), np.array([650, 510]),
-    #                                    np.array([735, 510]), np.array([735, 400]), np.array([735, 290]),
-    #                                    np.array([650, 290])]
-
-    initial_starts_map_3_robots_10 = [np.array([644, 115]), np.array([566, 461]), np.array([407, 592]),
-                                      np.array([57, 571]), np.array([738, 468]), np.array([301, 746]),
-                                      np.array([540, 367]), np.array([263, 190]), np.array([581, 507]),
-                                      np.array([594, 560])]
-
-    initial_targets_map_3_robots_10 = [np.array([250, 440]), np.array([467, 312]), np.array([557, 166]),
-                                       np.array([479, 466]), np.array([495, 68]), np.array([657, 157]),
-                                       np.array([296, 168]), np.array([486, 535]), np.array([300, 700]),
-                                       np.array([737, 307])]
-
-    starts = {}
-    targets = {}
-    # for i in range(env.agent_num):
-    #     if map_index == 0:
-    #         starts[env.possible_agents[i]] = initial_starts_map_1_robots_5[i]
-    #         targets[env.possible_agents[i]] = initial_targets_map_1_robots_5[i]
-    #     elif map_index == 1:
-    #         starts[env.possible_agents[i]] = initial_starts_map_2_robots_5[i]
-    #         targets[env.possible_agents[i]] = initial_targets_map_2_robots_5[i]
-    #     elif map_index == 2:
-    #         starts[env.possible_agents[i]] = initial_starts_map_3_robots_5[i]
-    #         targets[env.possible_agents[i]] = initial_targets_map_3_robots_5[i]
-
-    for i in range(env.agent_num):
-        if map_index == 0:
-            starts[env.possible_agents[i]] = initial_starts_map_1_robots_10[i]
-            targets[env.possible_agents[i]] = initial_targets_map_1_robots_10[i]
-            # starts[env.possible_agents[i]] = initial_starts_map_1_robots_15[i]
-            # targets[env.possible_agents[i]] = initial_targets_map_1_robots_15[i]
-        elif map_index == 1:
-            starts[env.possible_agents[i]] = initial_starts_map_2_robots_10[i]
-            targets[env.possible_agents[i]] = initial_targets_map_2_robots_10[i]
-        elif map_index == 2:
-            starts[env.possible_agents[i]] = initial_starts_map_3_robots_10[i]
-            targets[env.possible_agents[i]] = initial_targets_map_3_robots_10[i]
-
-    total_path_dis = 0
-
-    # 根据agent数量设置lb和ub
-    lower_bound = [5, -math.pi / 4]
-    upper_bound = [20, math.pi / 4]
-    repeated_iter = cycle(lower_bound)
-    fn_lb = list(islice(repeated_iter, len(lower_bound) * env.agent_num))
-
-    repeated_iter = cycle(upper_bound)
-    fn_ub = list(islice(repeated_iter, len(upper_bound) * env.agent_num))
-
-    """
-    PSO的size和ABC的n_population对应，dimension就是动作维度，ABC里面应该没有
-    """
-
-    # artificial bee colony
-    abc_for_map = ABC(npopulation=15, nruns=15, fn_eval=env.objective, fn_lb=fn_lb, fn_ub=fn_ub, env=env)
-
-    # origin ABC
-    origin_abc_for_map = ABC_origin(n_population=15, n_runs=15, fn_eval=env.objective, fn_lb=fn_lb, fn_ub=fn_ub, env=env)
-
-    # PSO
-    pso_for_map = PSO(dimension=env.agent_num*2, time=15, size=15, fn_lb=fn_lb, fn_ub=fn_ub, v_low=-3, v_high=3, env=env)
-
-    # CPSO
-    cpso_for_map = CPSO(dimension=env.agent_num*2, generation=15, size=15, fn_lb=fn_lb, fn_ub=fn_ub, v_low=-3, v_high=3, env=env)
-
-    # ABCL
-    abcl_for_map = ABCL(npopulation=15, nruns=15, fn_eval=env.objective, fn_lb=lower_bound, fn_ub=upper_bound, env=env)
-
-    # 记录每种方法的成功次数
-    ppo_abc_success_ep_num = 0
-    abc_success_ep_num = 0
-    pso_success_ep_num = 0
-    cpso_success_ep_num = 0
-    abcl_success_ep_num = 0
-
-    # action space dimension
-    action_dim = 3  # 三个概率
-
-    print("============================================================================================")
-
-    ################# testing procedure ################
-    # initialize a PPO agent
-    ppo_agent = PPO(action_dim, lr_actor, lr_critic, gamma, K_epochs, eps_clip, has_continuous_action_space, action_std)
-
-    # track total training time
-    start_time = datetime.now().replace(microsecond=0)
-    print("Started training at (GMT): ", start_time)
-
-    print("============================================================================================")
-
-    ppo_agent.load(checkpoint_path)
-
-    ppo_abc_test_running_reward = 0
-    abc_test_running_reward = 0
-    pso_test_running_reward = 0
-
-    ep_reward = 0
-
-    time_store = []
-    dis_store = []
-    time_per_step = []
-
-    """PPO-ABC testing"""
-    for ep in range(0, 1):
-        obs, _ = env.reset(seed=seed, starting_points=starts, targets=targets, map_index=map_index)
-
-        current_ep_reward = 0
-        initial_rgb_array = env.render()  # 输出形状为（800， 800， 3）
-        initial_rgb_array_transposed = np.transpose(initial_rgb_array, (2, 0, 1))
-        initial_rgb_array_transposed = np.expand_dims(initial_rgb_array_transposed, axis=0)
-        rgb_array_transposed = torch.from_numpy(initial_rgb_array_transposed).float()
-
-        ppo_abc_start_time = time.time()
-
-        for t in range(1, max_ep_len + 1):
-            # adjust the probability of three strategies
-            start_time_one_step = time.time()
+ALGORITHMS = ["ppo_abc", "abc", "pso", "cpso", "abcl"]
 
 
-            actions = {}
-            probabilities, strategy_index, raw_action_probs = ppo_agent.select_strategy_profile(
-                rgb_array_transposed,
-                deterministic=True,
-            )
-            probabilities = [round(value, 3) for value in probabilities]
+def build_optimizer(name, env, fn_lb, fn_ub, population, runs):
+    """Create the appropriate optimizer for each algorithm."""
+    if name == "abc":
+        return ABC_origin(
+            n_population=population,
+            n_runs=runs,
+            fn_eval=env.objective,
+            fn_lb=fn_lb,
+            fn_ub=fn_ub,
+            env=env,
+        )
+    elif name == "pso":
+        return PSOAlgo(
+            dimension=env.agent_num * 2,
+            time=runs,
+            size=population,
+            fn_lb=fn_lb,
+            fn_ub=fn_ub,
+            v_low=-3,
+            v_high=3,
+            env=env,
+        )
+    elif name == "cpso":
+        return CPSO(
+            dimension=env.agent_num * 2,
+            generation=runs,
+            size=population,
+            fn_lb=fn_lb,
+            fn_ub=fn_ub,
+            v_low=-3,
+            v_high=3,
+            env=env,
+        )
+    elif name == "abcl":
+        return ABCL(
+            npopulation=population,
+            nruns=runs,
+            fn_eval=env.objective,
+            fn_lb=[5, -math.pi / 4],
+            fn_ub=[20, math.pi / 4],
+            env=env,
+        )
+    else:
+        return ABC(
+            npopulation=population,
+            nruns=runs,
+            fn_eval=env.objective,
+            fn_lb=fn_lb,
+            fn_ub=fn_ub,
+            env=env,
+        )
 
-            abc_for_map.set_probability(probabilities)
-            temp = abc_for_map.optimize()
-            end_time_one_step = time.time()
-            time_per_step.append(end_time_one_step-start_time_one_step)
 
-            for i in range(len(env.agents)):
-                agent = env.agents[i]
-                actions[agent] = np.array([temp[2 * i], temp[2 * i + 1]])
+def render_state(env):
+    frame = env.render()
+    state = np.transpose(frame, (2, 0, 1))
+    state = np.expand_dims(state, axis=0)
+    return torch.from_numpy(state).float()
 
-            # print(actions)
-            _, reward, done, _, _, path_dis = env.step(actions)
-            ep_reward += reward
-            total_path_dis += np.round(path_dis)
-            # timestep_reward_storage.append(reward)
+
+def run_episode(args, algorithm, episode_index, map_index, agent_num, starts, targets, ppo_agent):
+    """Run a single episode for a given algorithm."""
+    env = Map(
+        agent_num=agent_num,
+        render_mode=args.render_mode,
+        test_result_save=args.save_images,
+    )
+    _, _ = env.reset(
+        seed=args.seed + episode_index,
+        map_index=map_index,
+        starting_points=starts,
+        targets=targets,
+    )
+
+    fn_lb, fn_ub = expand_bounds(agent_num, args.lower_bound, args.upper_bound)
+    optimizer = build_optimizer(algorithm, env, fn_lb, fn_ub, args.population, args.runs)
+
+    state = render_state(env) if algorithm == "ppo_abc" else None
+    total_reward = 0.0
+    total_path_distance = 0.0
+    step_times = []
+    success = False
+    timeout = True
+    start_time = time.time()
+
+    for step in range(1, args.max_ep_len + 1):
+        step_start = time.time()
+
+        if algorithm == "ppo_abc" and state is not None:
+            probabilities, _, _ = ppo_agent.select_strategy_profile(state, deterministic=True)
+            optimizer.set_probability(probabilities)
+
+        solution = optimizer.optimize()
+        actions = solution_to_actions(solution, env.agents)
+        _, reward, done, _, _, path_distance = env.step(actions)
+
+        total_reward += float(reward)
+        total_path_distance += float(path_distance)
+        step_times.append(time.time() - step_start)
+
+        if algorithm == "ppo_abc":
             if done:
-                env.render()
+                ppo_agent.buffer.rewards.append(float(reward))
+                ppo_agent.buffer.is_terminals.append(done)
             else:
-                rgb_array = env.render()
+                state = render_state(env)
+                ppo_agent.buffer.rewards.append(float(reward))
+                ppo_agent.buffer.is_terminals.append(done)
 
-                rgb_array_transposed = np.transpose(rgb_array, (2, 0, 1))
+        if done:
+            success = True
+            timeout = False
+            break
 
-                rgb_array_transposed = np.expand_dims(rgb_array_transposed, axis=0)
+        all_finished_or_failed = all(
+            env.collisions[agent] or env.terminations[agent] or env.truncations[agent]
+            for agent in env.agents
+        )
+        if all_finished_or_failed:
+            timeout = False
+            break
 
-                rgb_array_transposed = torch.from_numpy(rgb_array_transposed).float()
-
-            if done:
-                ppo_abc_end_time = time.time()
-                ppo_abc_success_ep_num += 1
-                ppo_abc_lasting_time = np.round(ppo_abc_end_time - ppo_abc_start_time, 2)
-                time_store.append(ppo_abc_lasting_time)
-                dis_store.append(total_path_dis)
-                print("success")
-                # pygame.image.save(env.surf, "./PPO_ABC_test_images/5_robots/map3/PPO_ABC_ep_{}_test_result.png".format(ep))
-                # pygame.image.save(env.surf, "./PPO_ABC_test_images/10_robots/map1/PPO_ABC_ep_{}_test_result.png".format(ep))
-                # pygame.image.save(env.surf, "./PPO_ABC_test_images/10_robots/map2/PPO_ABC_ep_{}_test_result.png".format(ep))
-                pygame.image.save(env.surf, "./PPO_ABC_test_images/10_robots/map3/PPO_ABC_ep_{}_test_result.png".format(ep))
-
-                break
-            elif all([env.collisions[agent] or env.terminations[agent] or env.truncations[agent] for agent in env.agents]):
-                ppo_abc_end_time = time.time()
-                ppo_abc_lasting_time = np.round(ppo_abc_end_time - ppo_abc_start_time, 2)
-                print("failed")
-                break
-
-        # clean buffer
+    if algorithm == "ppo_abc" and ppo_agent is not None:
         ppo_agent.buffer.clear()
 
-        ppo_abc_test_running_reward += ep_reward
-        print('Algorithm: {} \t\t Episode: {} \t\t Success: {} \t\t Reward: {} \t\t Lasting time: {} \t\t Total Path Distance: {}'.format("PPO-ABC", ep, done, round(ep_reward, 2), ppo_abc_lasting_time, total_path_dis))
-        total_path_dis = 0
-        ep_reward = 0
-
-
-    if len(time_store) > 0:
-        print("Max Time: {} \t\t Min Time: {} \t\t Mean Time: {} \t\t Max Dis: {} \t\t Min Dis: {} \t\t Mean: {}".format(max(time_store), min(time_store), np.mean(time_store), max(dis_store), min(dis_store), np.mean(dis_store)))
-    if len(time_per_step) > 0:
-        print("Average time per step: {} \t Max: {} \t Min: {}".format(np.mean(time_per_step), max(time_per_step), min(time_per_step)))
-    time_store = []
-    dis_store = []
-    time_per_step = []
-
-
-    """ABC testing"""
-    for ep in range(0, 0):
-
-        """调整初始位置和终点"""
-        obs, _ = env.reset(seed=seed, starting_points=starts, targets=targets, map_index=map_index)
-
-        env.render()
-
-        abc_start_time = time.time()
-
-        for t in range(0, max_ep_len):
-            start_time_one_step = time.time()
-
-            actions = {}
-            temp = origin_abc_for_map.optimize()
-
-            end_time_one_step = time.time()
-            time_per_step.append(end_time_one_step-start_time_one_step)
-
-            for i in range(len(env.agents)):
-                agent = env.agents[i]
-                actions[agent] = np.array([temp[2 * i], temp[2 * i + 1]])
-
-            # print(actions)
-            _, reward, done, _, _, path_dis = env.step(actions)
-            total_path_dis += np.round(path_dis)
-            ep_reward += reward
-
-            env.render()
-
-            if done:
-                abc_end_time = time.time()
-                abc_success_ep_num += 1
-                abc_lasting_time = np.round(abc_end_time - abc_start_time, 2)
-                time_store.append(abc_lasting_time)
-                dis_store.append(total_path_dis)
-                print("success")
-
-                # pygame.image.save(env.surf, "./ABC_test_images/5_robots/ABC_ep_{}_test_result.png".format(ep))
-                # pygame.image.save(env.surf, "./ABC_test_images/10_robots/map1/ABC_ep_{}_test_result.png".format(ep))
-                # pygame.image.save(env.surf, "./ABC_test_images/10_robots/map2/ABC_ep_{}_test_result.png".format(ep))
-                pygame.image.save(env.surf, "./ABC_test_images/10_robots/map3/ABC_ep_{}_test_result.png".format(ep))
-
-
-                break
-            elif all([env.collisions[agent] or env.terminations[agent] or env.truncations[agent] for agent in env.agents]):
-                abc_end_time = time.time()
-                abc_lasting_time = np.round(abc_end_time - abc_start_time, 2)
-                print("failed")
-                break
-            else:
-                abc_end_time = time.time()
-                abc_lasting_time = np.round(abc_end_time - abc_start_time, 2)
-
-
-        abc_test_running_reward += ep_reward
-        print('Algorithm: {} \t\t Episode: {} \t\t Success: {} \t\t Reward: {} \t\t Lasting time: {} \t\t Total Path Distance: {}'.format("ABC", ep, done, round(ep_reward, 2), abc_lasting_time, total_path_dis))
-        total_path_dis = 0
-        ep_reward = 0
-
-    if len(time_store) > 0:
-        print("Max Time: {} \t\t Min Time: {} \t\t Mean Time: {} \t\t Max Dis: {} \t\t Min Dis: {} \t\t Mean: {}".format(
-                max(time_store), min(time_store), np.mean(time_store), max(dis_store), min(dis_store),
-                np.mean(dis_store)))
-    if len(time_per_step) > 0:
-        print("Average time per step: {} \t Max: {} \t Min: {}".format(np.mean(time_per_step), max(time_per_step), min(time_per_step)))
-    time_store = []
-    dis_store = []
-    time_per_step = []
-
-
-    """PSO testing"""
-    for ep in range(0, 0):
-
-        """调整初始位置和终点"""
-        obs, _ = env.reset(seed=seed, starting_points=starts, targets=targets, map_index=map_index)
-
-        env.render()
-
-        pso_start_time = time.time()
-
-        for t in range(0, max_ep_len):
-            start_time_one_step = time.time()
-
-            actions = {}
-            temp = pso_for_map.optimize()
-
-            end_time_one_step = time.time()
-            time_per_step.append(end_time_one_step-start_time_one_step)
-
-            for i in range(len(env.agents)):
-                agent = env.agents[i]
-                actions[agent] = np.array([temp[2 * i], temp[2 * i + 1]])
-
-            # print(actions)
-            _, reward, done, _, _, path_dis = env.step(actions)
-            total_path_dis += np.round(path_dis)
-            ep_reward += reward
-
-            env.render()
-
-            if done:
-                pso_end_time = time.time()
-                pso_lasting_time = np.round(pso_end_time - pso_start_time, 2)
-                time_store.append(pso_lasting_time)
-                dis_store.append(total_path_dis)
-
-                pso_success_ep_num += 1
-                print("success")
-
-                # pygame.image.save(env.surf, "./PSO_test_images/10_robots/map1/PSO_ep_{}_test_result.png".format(ep))
-                # pygame.image.save(env.surf, "./PSO_test_images/10_robots/map2/PSO_ep_{}_test_result.png".format(ep))
-                pygame.image.save(env.surf, "./PSO_test_images/10_robots/map3/PSO_ep_{}_test_result.png".format(ep))
-
-
-                break
-            elif all([env.collisions[agent] or env.terminations[agent] for agent in env.agents]):
-                pso_end_time = time.time()
-                pso_lasting_time = np.round(pso_end_time - pso_start_time, 2)
-                print("failed")
-                break
-            else:
-                pso_end_time = time.time()
-                pso_lasting_time = np.round(pso_end_time - pso_start_time, 2)
-
-        pso_test_running_reward += ep_reward
-        print('Algorithm: {} \t\t Episode: {} \t\t Success: {} \t\t Reward: {} \t\t Lasting time: {} \t\t Total Path Distance: {}'.format("PSO", ep, done, round(ep_reward, 2), pso_lasting_time, np.round(total_path_dis, 2)))
-        total_path_dis = 0
-        ep_reward = 0
-
-    if len(time_store) > 0:
-        print("Max Time: {} \t\t Min Time: {} \t\t Mean Time: {} \t\t Max Dis: {} \t\t Min Dis: {} \t\t Mean: {}".format(
-                max(time_store), min(time_store), np.mean(time_store), max(dis_store), min(dis_store),
-                np.mean(dis_store)))
-    # time_store = []
-    # dis_store = []
-    if len(time_per_step) > 0:
-        print("Average time per step: {} \t Max: {} \t Min: {}".format(np.mean(time_per_step), max(time_per_step), min(time_per_step)))
-
-
-    """CPSO testing"""
-    for ep in range(0, 0):
-        """调整初始位置和终点"""
-        obs, _ = env.reset(seed=seed, starting_points=starts, targets=targets, map_index=map_index)
-
-        env.render()
-
-        cpso_start_time = time.time()
-
-        for t in range(0, max_ep_len):
-            start_time_one_step = time.time()
-
-            actions = {}
-            temp = cpso_for_map.optimize()
-
-            end_time_one_step = time.time()
-            time_per_step.append(end_time_one_step-start_time_one_step)
-
-            for i in range(len(env.agents)):
-                agent = env.agents[i]
-                actions[agent] = np.array([temp[2 * i], temp[2 * i + 1]])
-
-            # print(actions)
-            _, reward, done, _, _, path_dis = env.step(actions)
-            total_path_dis += np.round(path_dis)
-            ep_reward += reward
-
-            env.render()
-
-            if done:
-                cpso_end_time = time.time()
-                cpso_lasting_time = np.round(cpso_end_time - cpso_start_time, 2)
-                time_store.append(cpso_lasting_time)
-                dis_store.append(total_path_dis)
-
-                cpso_success_ep_num += 1
-                print("success")
-
-                pygame.image.save(env.surf, "./CPSO_test_images/10_robots/map2/CPSO_ep_{}_test_result.png".format(ep))
-                
-                break
-            elif all([env.collisions[agent] or env.terminations[agent] for agent in env.agents]):
-                cpso_end_time = time.time()
-                cpso_lasting_time = np.round(cpso_end_time - cpso_start_time, 2)
-                print("failed")
-                break
-            else:
-                cpso_end_time = time.time()
-                cpso_lasting_time = np.round(cpso_end_time - cpso_start_time, 2)
-
-        pso_test_running_reward += ep_reward
-        print('Algorithm: {} \t\t Episode: {} \t\t Success: {} \t\t Reward: {} \t\t Lasting time: {} \t\t Total Path Distance: {}'.format("CPSO", ep, done, round(ep_reward, 2), cpso_lasting_time, np.round(total_path_dis, 2)))
-        total_path_dis = 0
-        ep_reward = 0
-
-    if len(time_store) > 0:
-        print("Max Time: {} \t\t Min Time: {} \t\t Mean Time: {} \t\t Max Dis: {} \t\t Min Dis: {} \t\t Mean: {}".format(
-                max(time_store), min(time_store), np.mean(time_store), max(dis_store), min(dis_store),
-                np.mean(dis_store)))
-    # time_store = []
-    # dis_store = []
-    if len(time_per_step) > 0:
-        print("Average time per step: {} \t Max: {} \t Min: {}".format(np.mean(time_per_step), max(time_per_step), min(time_per_step)))
-
-
-    """ABCL testing"""
-    for ep in range(0, 0):
-        """调整初始位置和终点"""
-        obs, _ = env.reset(seed=seed, starting_points=starts, targets=targets, map_index=map_index)
-
-        env.render()
-
-        cpso_start_time = time.time()
-
-        for t in range(0, max_ep_len):
-            start_time_one_step = time.time()
-
-            actions = {}
-            temp = abcl_for_map.optimize()
-
-            end_time_one_step = time.time()
-            time_per_step.append(end_time_one_step-start_time_one_step)
-
-            for i in range(len(env.agents)):
-                agent = env.agents[i]
-                actions[agent] = np.array([temp[2 * i], temp[2 * i + 1]])
-
-            # print(actions)
-            _, reward, done, _, _, path_dis = env.step(actions)
-            total_path_dis += np.round(path_dis)
-            ep_reward += reward
-
-            env.render()
-
-            if done:
-                cpso_end_time = time.time()
-                cpso_lasting_time = np.round(cpso_end_time - cpso_start_time, 2)
-                time_store.append(cpso_lasting_time)
-                dis_store.append(total_path_dis)
-
-                abcl_success_ep_num += 1
-                print("success")
-
-                pygame.image.save(env.surf, "./ABCL_test_images/10_robots/map2/ABCL_ep_{}_test_result.png".format(ep))
-                break
-            elif all([env.collisions[agent] or env.terminations[agent] for agent in env.agents]):
-                cpso_end_time = time.time()
-                cpso_lasting_time = np.round(cpso_end_time - cpso_start_time, 2)
-                print("failed")
-                break
-
-        pso_test_running_reward += ep_reward
-        print('Algorithm: {} \t\t Episode: {} \t\t Success: {} \t\t Reward: {} \t\t Lasting time: {} \t\t Total Path Distance: {}'.format("ABCL", ep, done, round(ep_reward, 2), cpso_lasting_time, np.round(total_path_dis, 2)))
-        total_path_dis = 0
-        ep_reward = 0
-
-    if len(time_store) > 0:
-        print("Max Time: {} \t\t Min Time: {} \t\t Mean Time: {} \t\t Max Dis: {} \t\t Min Dis: {} \t\t Mean: {}".format(
-                max(time_store), min(time_store), np.mean(time_store), max(dis_store), min(dis_store),
-                np.mean(dis_store)))
-    # time_store = []
-    # dis_store = []
-    if len(time_per_step) > 0:
-        print("Average time per step: {} \t Max: {} \t Min: {}".format(np.mean(time_per_step), max(time_per_step), min(time_per_step)))
-
-
+    collision = any(env.collisions.values())
+    elapsed = time.time() - start_time
     env.close()
-    # print("============================================================================================")
-    #
-    # ppo_abc_avg_test_reward = np.round(ppo_abc_test_running_reward / total_test_episodes, 1)
-    # print("average test reward : " + str(ppo_abc_avg_test_reward))
-    #
-    # print("============================================================================================")
 
-if __name__ == '__main__':
+    return EpisodeResult(
+        algorithm=algorithm,
+        map_index=map_index,
+        agent_num=agent_num,
+        episode=episode_index,
+        success=success,
+        collision=collision,
+        timeout=timeout,
+        steps=step,
+        reward=total_reward,
+        path_distance=total_path_distance,
+        elapsed_time=elapsed,
+        avg_step_time=float(np.mean(step_times)) if step_times else 0.0,
+        probability_trace=[],
+    )
 
-    test()
+
+def build_ppo(args):
+    ppo = PPO(
+        action_dim=3,
+        lr_actor=0.0003,
+        lr_critic=0.001,
+        gamma=0.99,
+        K_epochs=80,
+        eps_clip=0.2,
+        has_continuous_action_space=False,
+    )
+    if args.checkpoint:
+        ppo.load(args.checkpoint)
+    return ppo
+
+
+def write_current_results(output_dir, results, grouped):
+    episode_path = os.path.join(output_dir, "episodes.csv")
+    write_episode_results(episode_path, results)
+
+    summary_rows = []
+    for (algorithm, map_index, agent_num), group_results in grouped.items():
+        row = summarize_results(group_results)
+        row.update({"algorithm": algorithm, "map_index": map_index, "agent_num": agent_num})
+        summary_rows.append(row)
+
+    summary_path = os.path.join(output_dir, "summary.csv")
+    write_summary(summary_path, summary_rows)
+    return episode_path, summary_path
+
+
+def load_existing_results(output_dir):
+    episode_path = os.path.join(output_dir, "episodes.csv")
+    results = []
+    grouped = defaultdict(list)
+    completed = set()
+    if not os.path.exists(episode_path):
+        return results, grouped, completed
+
+    with open(episode_path, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            result = EpisodeResult(
+                algorithm=row["algorithm"],
+                map_index=int(row["map_index"]),
+                agent_num=int(row["agent_num"]),
+                episode=int(row["episode"]),
+                success=row["success"] == "True",
+                collision=row["collision"] == "True",
+                timeout=row["timeout"] == "True",
+                steps=int(row["steps"]),
+                reward=float(row["reward"]),
+                path_distance=float(row["path_distance"]),
+                elapsed_time=float(row["elapsed_time"]),
+                avg_step_time=float(row["avg_step_time"]),
+                probability_trace=[],
+            )
+            results.append(result)
+            key = (result.algorithm, result.map_index, result.agent_num)
+            grouped[key].append(result)
+            completed.add((result.algorithm, result.map_index, result.agent_num, result.episode))
+    return results, grouped, completed
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Compare PPO-ABC, ABC, PSO, CPSO, ABCL algorithms."
+    )
+    parser.add_argument(
+        "--algorithms",
+        nargs="+",
+        default=ALGORITHMS,
+        choices=ALGORITHMS,
+        help="Algorithms to test (default: all)",
+    )
+    parser.add_argument(
+        "--agent-num",
+        type=int,
+        default=10,
+        help="Number of agents/robots (default: 10)",
+    )
+    parser.add_argument(
+        "--map-indices",
+        nargs="+",
+        type=int,
+        default=[0, 1, 2],
+        help="Map indices to test (default: 0 1 2)",
+    )
+    parser.add_argument(
+        "--episodes",
+        type=int,
+        default=10,
+        help="Number of episodes per algorithm per map (default: 10)",
+    )
+    parser.add_argument("--max-ep-len", type=int, default=200)
+    parser.add_argument("--population", type=int, default=15)
+    parser.add_argument("--runs", type=int, default=15)
+    parser.add_argument(
+        "--lower-bound",
+        nargs=2,
+        type=float,
+        default=[5.0, -math.pi / 4],
+    )
+    parser.add_argument(
+        "--upper-bound",
+        nargs=2,
+        type=float,
+        default=[20.0, math.pi / 4],
+    )
+    parser.add_argument(
+        "--render-mode",
+        default="rgb_array",
+        choices=["rgb_array", "human"],
+        help="Render mode (default: rgb_array for headless)",
+    )
+    parser.add_argument(
+        "--checkpoint",
+        default="PPO_preTrained/Map/10_robots/0511-15-16PPO_Map_6000.pth",
+        help="Path to PPO checkpoint",
+    )
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument(
+        "--output-dir",
+        default="compare_results",
+        help="Directory for CSV output",
+    )
+    parser.add_argument(
+        "--resume-dir",
+        default="",
+        help="Existing timestamped output directory to resume from",
+    )
+    parser.add_argument(
+        "--save-images",
+        action="store_true",
+        default=False,
+        help="Save test result images (requires pygame)",
+    )
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+
+    if "ppo_abc" in args.algorithms and not os.path.exists(args.checkpoint):
+        print(f"WARNING: checkpoint not found: {args.checkpoint}")
+        print("PPO-ABC will be skipped. Use --checkpoint to specify a valid path.")
+        args.algorithms = [a for a in args.algorithms if a != "ppo_abc"]
+
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+
+    output_dir = args.resume_dir or os.path.join(
+        args.output_dir,
+        datetime.now().strftime("%Y%m%d-%H%M%S"),
+    )
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Build PPO agent once if needed
+    ppo_agent = build_ppo(args) if "ppo_abc" in args.algorithms else None
+
+    results, grouped, completed = load_existing_results(output_dir)
+    if completed:
+        print(f"Resuming from {output_dir}: {len(completed)} episodes already complete", flush=True)
+
+    for map_index in args.map_indices:
+        print(f"\n{'='*60}", flush=True)
+        print(f"Map {map_index}", flush=True)
+        print(f"{'='*60}", flush=True)
+
+        # Pre-sample start/target positions for reproducibility
+        seed_env = Map(agent_num=args.agent_num, render_mode=None)
+        seed_env.reset(seed=args.seed, map_index=map_index)
+
+        scenarios = []
+        for ep in range(args.episodes):
+            starts, targets = sample_start_targets(
+                seed_env,
+                seed=args.seed + map_index * 10000 + ep,
+            )
+            scenarios.append((ep, starts, targets))
+        seed_env.close()
+
+        for algorithm in args.algorithms:
+            print(f"\n--- {algorithm.upper()} ---", flush=True)
+            algo_results = []
+
+            for ep, starts, targets in scenarios:
+                key = (algorithm, map_index, args.agent_num, ep)
+                if key in completed:
+                    print(f"  Episode {ep:3d}: SKIP existing result", flush=True)
+                    continue
+                result = run_episode(
+                    args, algorithm, ep, map_index, args.agent_num,
+                    starts, targets, ppo_agent,
+                )
+                results.append(result)
+                algo_results.append(result)
+                grouped[(algorithm, map_index, args.agent_num)].append(result)
+
+                status = "SUCCESS" if result.success else (
+                    "COLLISION" if result.collision else "TIMEOUT" if result.timeout else "FAIL"
+                )
+                print(
+                    f"  Episode {ep:3d}: {status:9s}  "
+                    f"steps={result.steps:3d}  "
+                    f"reward={result.reward:8.2f}  "
+                    f"time={result.elapsed_time:6.1f}s",
+                    flush=True,
+                )
+                write_current_results(output_dir, results, grouped)
+
+            # Print per-algorithm summary for this map
+            if algo_results:
+                summary = summarize_results(algo_results)
+                print(
+                    f"  SUMMARY: success_rate={summary['success_rate']:.2f}  "
+                    f"mean_reward={summary['mean_reward']:.1f}  "
+                    f"mean_steps={summary['mean_steps']:.1f}  "
+                    f"mean_time={summary['mean_elapsed_time']:.1f}s",
+                    flush=True,
+                )
+
+    # Print overall comparison
+    print(f"\n{'='*60}")
+    print("OVERALL COMPARISON")
+    print(f"{'='*60}")
+    print(f"{'Algorithm':<12} {'Success':>8} {'Collision':>10} {'Timeout':>9} "
+          f"{'MeanReward':>12} {'MeanSteps':>11} {'MeanTime':>10}")
+    print("-" * 72)
+
+    for algorithm in args.algorithms:
+        algo_group = [r for r in results if r.algorithm == algorithm]
+        if algo_group:
+            s = summarize_results(algo_group)
+            print(
+                f"{algorithm:<12} {s['success_rate']:8.2f} {s['collision_rate']:10.2f} "
+                f"{s['timeout_rate']:9.2f} {s['mean_reward']:12.1f} "
+                f"{s['mean_steps']:11.1f} {s['mean_elapsed_time']:10.1f}"
+            )
+
+    # Write CSV output
+    episode_path, summary_path = write_current_results(output_dir, results, grouped)
+    print(f"\nEpisode results saved to: {episode_path}")
+    print(f"Summary saved to: {summary_path}")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,1091 @@
+[START] Wed May 13 10:12:07 CST 2026 version2 full gpu
+============================================================================================
+Device set to: NVIDIA GeForce RTX 3090
+============================================================================================
+device=cuda:0
+algorithms=ppo_abc abc pso cpso abcl origin_abc fixed_iabc manual_iabc ppo_iabc
+RUN  ppo_abc map=0 agents=5 episode=0
+/home/bit1011/miniconda3/envs/myenv/lib/python3.9/site-packages/torch/nn/modules/conv.py:459: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:80.)
+  return F.conv2d(input, weight, bias, self.stride,
+  TIMEOUT   steps=200 reward= 40554.00 time= 45.110s
+RUN  ppo_abc map=0 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 65090.00 time= 45.269s
+RUN  ppo_abc map=0 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 61484.00 time= 45.060s
+RUN  ppo_abc map=0 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 45246.00 time= 43.695s
+RUN  ppo_abc map=0 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 63498.00 time= 44.803s
+RUN  ppo_abc map=0 agents=5 episode=5
+  SUCCESS   steps= 63 reward=  8832.00 time= 13.578s
+RUN  ppo_abc map=0 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 57844.00 time= 44.297s
+RUN  ppo_abc map=0 agents=5 episode=7
+  SUCCESS   steps= 75 reward= 13944.00 time= 16.193s
+RUN  ppo_abc map=0 agents=5 episode=8
+  SUCCESS   steps=100 reward= 18384.00 time= 21.737s
+RUN  ppo_abc map=0 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 59946.00 time= 45.381s
+RUN  ppo_abc map=1 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 70366.00 time= 50.702s
+RUN  ppo_abc map=1 agents=5 episode=1
+  SUCCESS   steps= 65 reward=  7688.00 time= 15.593s
+RUN  ppo_abc map=1 agents=5 episode=2
+  SUCCESS   steps= 78 reward= 12740.00 time= 18.817s
+RUN  ppo_abc map=1 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 54698.00 time= 50.025s
+RUN  ppo_abc map=1 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 60634.00 time= 54.513s
+RUN  ppo_abc map=1 agents=5 episode=5
+  TIMEOUT   steps=200 reward= 61502.00 time= 55.586s
+RUN  ppo_abc map=1 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 69002.00 time= 50.025s
+RUN  ppo_abc map=1 agents=5 episode=7
+  TIMEOUT   steps=200 reward= 63842.00 time= 49.364s
+RUN  ppo_abc map=1 agents=5 episode=8
+  TIMEOUT   steps=200 reward= 55648.00 time= 50.209s
+RUN  ppo_abc map=1 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 56632.00 time= 50.020s
+RUN  ppo_abc map=2 agents=5 episode=0
+  SUCCESS   steps= 74 reward= 13032.00 time= 15.989s
+RUN  ppo_abc map=2 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 50376.00 time= 44.210s
+RUN  ppo_abc map=2 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 28022.00 time= 43.863s
+RUN  ppo_abc map=2 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 58978.00 time= 44.393s
+RUN  ppo_abc map=2 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 54254.00 time= 44.037s
+RUN  ppo_abc map=2 agents=5 episode=5
+  SUCCESS   steps= 56 reward= 11302.00 time= 12.023s
+RUN  ppo_abc map=2 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 46746.00 time= 44.259s
+RUN  ppo_abc map=2 agents=5 episode=7
+  SUCCESS   steps= 36 reward=  2584.00 time=  7.705s
+RUN  ppo_abc map=2 agents=5 episode=8
+  SUCCESS   steps=112 reward= 24630.00 time= 24.340s
+RUN  ppo_abc map=2 agents=5 episode=9
+  SUCCESS   steps= 64 reward=  5238.00 time= 13.770s
+RUN  ppo_abc map=0 agents=10 episode=0
+  TIMEOUT   steps=200 reward= 89848.00 time= 43.758s
+RUN  ppo_abc map=0 agents=10 episode=1
+  TIMEOUT   steps=200 reward= 57856.00 time= 43.253s
+RUN  ppo_abc map=0 agents=10 episode=2
+  TIMEOUT   steps=200 reward= 64136.00 time= 43.184s
+RUN  ppo_abc map=0 agents=10 episode=3
+  TIMEOUT   steps=200 reward=128814.00 time= 44.022s
+RUN  ppo_abc map=0 agents=10 episode=4
+  TIMEOUT   steps=200 reward= 90886.00 time= 43.498s
+RUN  ppo_abc map=0 agents=10 episode=5
+  TIMEOUT   steps=200 reward= 99130.00 time= 43.920s
+RUN  ppo_abc map=0 agents=10 episode=6
+  TIMEOUT   steps=200 reward=135768.00 time= 44.796s
+RUN  ppo_abc map=0 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 82340.00 time= 43.034s
+RUN  ppo_abc map=0 agents=10 episode=8
+  TIMEOUT   steps=200 reward= 78020.00 time= 43.157s
+RUN  ppo_abc map=0 agents=10 episode=9
+  TIMEOUT   steps=200 reward=126584.00 time= 43.962s
+RUN  ppo_abc map=1 agents=10 episode=0
+  TIMEOUT   steps=200 reward=116514.00 time= 49.581s
+RUN  ppo_abc map=1 agents=10 episode=1
+  TIMEOUT   steps=200 reward=129670.00 time= 50.098s
+RUN  ppo_abc map=1 agents=10 episode=2
+  COLLISION steps= 52 reward=  6688.00 time= 12.521s
+RUN  ppo_abc map=1 agents=10 episode=3
+  TIMEOUT   steps=200 reward= 82374.00 time= 48.590s
+RUN  ppo_abc map=1 agents=10 episode=4
+  SUCCESS   steps=109 reward= 51818.00 time= 26.601s
+RUN  ppo_abc map=1 agents=10 episode=5
+  TIMEOUT   steps=200 reward=109566.00 time= 50.179s
+RUN  ppo_abc map=1 agents=10 episode=6
+  TIMEOUT   steps=200 reward=141740.00 time= 51.353s
+RUN  ppo_abc map=1 agents=10 episode=7
+  TIMEOUT   steps=200 reward=113266.00 time= 49.230s
+RUN  ppo_abc map=1 agents=10 episode=8
+  TIMEOUT   steps=200 reward=125230.00 time= 50.052s
+RUN  ppo_abc map=1 agents=10 episode=9
+  TIMEOUT   steps=200 reward=118226.00 time= 49.751s
+RUN  ppo_abc map=2 agents=10 episode=0
+  TIMEOUT   steps=200 reward=138122.00 time= 45.168s
+RUN  ppo_abc map=2 agents=10 episode=1
+  TIMEOUT   steps=200 reward=107600.00 time= 43.959s
+RUN  ppo_abc map=2 agents=10 episode=2
+  TIMEOUT   steps=200 reward=139692.00 time= 44.594s
+RUN  ppo_abc map=2 agents=10 episode=3
+  TIMEOUT   steps=200 reward=112890.00 time= 44.524s
+RUN  ppo_abc map=2 agents=10 episode=4
+  TIMEOUT   steps=200 reward=106330.00 time= 43.807s
+RUN  ppo_abc map=2 agents=10 episode=5
+  TIMEOUT   steps=200 reward=124976.00 time= 44.182s
+RUN  ppo_abc map=2 agents=10 episode=6
+  TIMEOUT   steps=200 reward=139620.00 time= 45.214s
+RUN  ppo_abc map=2 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 62326.00 time= 43.205s
+RUN  ppo_abc map=2 agents=10 episode=8
+  SUCCESS   steps= 87 reward= 46338.00 time= 18.994s
+RUN  ppo_abc map=2 agents=10 episode=9
+  TIMEOUT   steps=200 reward=135148.00 time= 45.124s
+RUN  abc map=0 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 40664.00 time= 42.010s
+RUN  abc map=0 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 64978.00 time= 42.562s
+RUN  abc map=0 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 61166.00 time= 43.222s
+RUN  abc map=0 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 45542.00 time= 42.912s
+RUN  abc map=0 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 63382.00 time= 43.306s
+RUN  abc map=0 agents=5 episode=5
+  SUCCESS   steps= 62 reward=  8448.00 time= 12.788s
+RUN  abc map=0 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 57636.00 time= 42.537s
+RUN  abc map=0 agents=5 episode=7
+  SUCCESS   steps= 74 reward= 13774.00 time= 15.356s
+RUN  abc map=0 agents=5 episode=8
+  SUCCESS   steps=101 reward= 18568.00 time= 21.186s
+RUN  abc map=0 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 60052.00 time= 42.765s
+RUN  abc map=1 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 70376.00 time= 49.194s
+RUN  abc map=1 agents=5 episode=1
+  SUCCESS   steps= 65 reward=  7798.00 time= 15.126s
+RUN  abc map=1 agents=5 episode=2
+  SUCCESS   steps= 78 reward= 13282.00 time= 18.110s
+RUN  abc map=1 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 54726.00 time= 48.440s
+RUN  abc map=1 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 60742.00 time= 48.921s
+RUN  abc map=1 agents=5 episode=5
+  TIMEOUT   steps=200 reward= 61494.00 time= 47.900s
+RUN  abc map=1 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 69104.00 time= 48.400s
+RUN  abc map=1 agents=5 episode=7
+  TIMEOUT   steps=200 reward= 63842.00 time= 47.942s
+RUN  abc map=1 agents=5 episode=8
+  TIMEOUT   steps=200 reward= 55864.00 time= 48.545s
+RUN  abc map=1 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 56924.00 time= 49.086s
+RUN  abc map=2 agents=5 episode=0
+  SUCCESS   steps= 75 reward= 13314.00 time= 15.563s
+RUN  abc map=2 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 50382.00 time= 42.344s
+RUN  abc map=2 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 28302.00 time= 41.590s
+RUN  abc map=2 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 58968.00 time= 42.185s
+RUN  abc map=2 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 61946.00 time= 42.607s
+RUN  abc map=2 agents=5 episode=5
+  SUCCESS   steps= 56 reward= 11296.00 time= 11.511s
+RUN  abc map=2 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 46642.00 time= 42.185s
+RUN  abc map=2 agents=5 episode=7
+  SUCCESS   steps= 36 reward=  2580.00 time=  7.379s
+RUN  abc map=2 agents=5 episode=8
+  SUCCESS   steps=115 reward= 25934.00 time= 23.940s
+RUN  abc map=2 agents=5 episode=9
+  SUCCESS   steps= 63 reward=  6682.00 time= 13.015s
+RUN  abc map=0 agents=10 episode=0
+  TIMEOUT   steps=200 reward= 90038.00 time= 41.587s
+RUN  abc map=0 agents=10 episode=1
+  TIMEOUT   steps=200 reward= 61894.00 time= 41.340s
+RUN  abc map=0 agents=10 episode=2
+  TIMEOUT   steps=200 reward= 62332.00 time= 41.255s
+RUN  abc map=0 agents=10 episode=3
+  TIMEOUT   steps=200 reward=127952.00 time= 42.345s
+RUN  abc map=0 agents=10 episode=4
+  TIMEOUT   steps=200 reward= 90414.00 time= 41.490s
+RUN  abc map=0 agents=10 episode=5
+  TIMEOUT   steps=200 reward=101198.00 time= 41.860s
+RUN  abc map=0 agents=10 episode=6
+  TIMEOUT   steps=200 reward=132540.00 time= 42.793s
+RUN  abc map=0 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 83758.00 time= 41.137s
+RUN  abc map=0 agents=10 episode=8
+  TIMEOUT   steps=200 reward= 75430.00 time= 41.427s
+RUN  abc map=0 agents=10 episode=9
+  TIMEOUT   steps=200 reward=124838.00 time= 42.081s
+RUN  abc map=1 agents=10 episode=0
+  TIMEOUT   steps=200 reward=128568.00 time= 47.739s
+RUN  abc map=1 agents=10 episode=1
+  TIMEOUT   steps=200 reward=140616.00 time= 49.068s
+RUN  abc map=1 agents=10 episode=2
+  SUCCESS   steps= 70 reward= 21702.00 time= 16.202s
+RUN  abc map=1 agents=10 episode=3
+  TIMEOUT   steps=200 reward= 82124.00 time= 46.764s
+RUN  abc map=1 agents=10 episode=4
+  SUCCESS   steps= 92 reward= 41426.00 time= 21.512s
+RUN  abc map=1 agents=10 episode=5
+  TIMEOUT   steps=200 reward=110074.00 time= 47.459s
+RUN  abc map=1 agents=10 episode=6
+  TIMEOUT   steps=200 reward=143748.00 time= 48.261s
+RUN  abc map=1 agents=10 episode=7
+  TIMEOUT   steps=200 reward=115178.00 time= 47.205s
+RUN  abc map=1 agents=10 episode=8
+  TIMEOUT   steps=200 reward=128892.00 time= 48.260s
+RUN  abc map=1 agents=10 episode=9
+  TIMEOUT   steps=200 reward=119846.00 time= 47.772s
+RUN  abc map=2 agents=10 episode=0
+  TIMEOUT   steps=200 reward=137590.00 time= 43.157s
+RUN  abc map=2 agents=10 episode=1
+  TIMEOUT   steps=200 reward=104994.00 time= 41.752s
+RUN  abc map=2 agents=10 episode=2
+  TIMEOUT   steps=200 reward=136802.00 time= 42.356s
+RUN  abc map=2 agents=10 episode=3
+  TIMEOUT   steps=200 reward=113846.00 time= 42.619s
+RUN  abc map=2 agents=10 episode=4
+  TIMEOUT   steps=200 reward=113396.00 time= 41.912s
+RUN  abc map=2 agents=10 episode=5
+  TIMEOUT   steps=200 reward=134960.00 time= 43.125s
+RUN  abc map=2 agents=10 episode=6
+  TIMEOUT   steps=200 reward=138448.00 time= 43.283s
+RUN  abc map=2 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 62792.00 time= 41.220s
+RUN  abc map=2 agents=10 episode=8
+  SUCCESS   steps= 86 reward= 45340.00 time= 17.877s
+RUN  abc map=2 agents=10 episode=9
+  TIMEOUT   steps=200 reward=136674.00 time= 43.217s
+RUN  pso map=0 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 43136.00 time= 11.775s
+RUN  pso map=0 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 64756.00 time= 11.740s
+RUN  pso map=0 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 60938.00 time= 11.760s
+RUN  pso map=0 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 45156.00 time= 11.772s
+RUN  pso map=0 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 62954.00 time= 11.736s
+RUN  pso map=0 agents=5 episode=5
+  SUCCESS   steps= 63 reward=  8622.00 time=  3.717s
+RUN  pso map=0 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 53302.00 time= 11.754s
+RUN  pso map=0 agents=5 episode=7
+  SUCCESS   steps= 95 reward= 18542.00 time=  5.593s
+RUN  pso map=0 agents=5 episode=8
+  SUCCESS   steps= 76 reward=  7798.00 time=  4.481s
+RUN  pso map=0 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 59736.00 time= 11.732s
+RUN  pso map=1 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 70384.00 time= 14.427s
+RUN  pso map=1 agents=5 episode=1
+  SUCCESS   steps= 62 reward=  6842.00 time=  4.497s
+RUN  pso map=1 agents=5 episode=2
+  SUCCESS   steps=101 reward= 20336.00 time=  7.304s
+RUN  pso map=1 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 54614.00 time= 14.418s
+RUN  pso map=1 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 60884.00 time= 14.411s
+RUN  pso map=1 agents=5 episode=5
+  TIMEOUT   steps=200 reward= 61074.00 time= 14.437s
+RUN  pso map=1 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 68994.00 time= 14.430s
+RUN  pso map=1 agents=5 episode=7
+  TIMEOUT   steps=200 reward= 63732.00 time= 14.450s
+RUN  pso map=1 agents=5 episode=8
+  TIMEOUT   steps=200 reward= 58080.00 time= 14.429s
+RUN  pso map=1 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 56630.00 time= 14.444s
+RUN  pso map=2 agents=5 episode=0
+  SUCCESS   steps= 92 reward= 19888.00 time=  5.399s
+RUN  pso map=2 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 45728.00 time= 11.751s
+RUN  pso map=2 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 28382.00 time= 11.771s
+RUN  pso map=2 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 62878.00 time= 11.723s
+RUN  pso map=2 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 54684.00 time= 11.736s
+RUN  pso map=2 agents=5 episode=5
+  SUCCESS   steps= 56 reward= 11292.00 time=  3.292s
+RUN  pso map=2 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 46342.00 time= 11.738s
+RUN  pso map=2 agents=5 episode=7
+  SUCCESS   steps= 36 reward=  2582.00 time=  2.123s
+RUN  pso map=2 agents=5 episode=8
+  SUCCESS   steps= 86 reward= 14222.00 time=  5.065s
+RUN  pso map=2 agents=5 episode=9
+  SUCCESS   steps= 86 reward= 11696.00 time=  5.070s
+RUN  pso map=0 agents=10 episode=0
+  TIMEOUT   steps=200 reward= 91894.00 time= 11.834s
+RUN  pso map=0 agents=10 episode=1
+  TIMEOUT   steps=200 reward= 56984.00 time= 11.857s
+RUN  pso map=0 agents=10 episode=2
+  TIMEOUT   steps=200 reward= 70544.00 time= 11.848s
+RUN  pso map=0 agents=10 episode=3
+  TIMEOUT   steps=200 reward=128058.00 time= 11.810s
+RUN  pso map=0 agents=10 episode=4
+  TIMEOUT   steps=200 reward= 96486.00 time= 11.849s
+RUN  pso map=0 agents=10 episode=5
+  TIMEOUT   steps=200 reward=102792.00 time= 11.838s
+RUN  pso map=0 agents=10 episode=6
+  TIMEOUT   steps=200 reward=118750.00 time= 11.800s
+RUN  pso map=0 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 76076.00 time= 11.859s
+RUN  pso map=0 agents=10 episode=8
+  TIMEOUT   steps=200 reward= 74402.00 time= 11.853s
+RUN  pso map=0 agents=10 episode=9
+  TIMEOUT   steps=200 reward=126232.00 time= 11.809s
+RUN  pso map=1 agents=10 episode=0
+  TIMEOUT   steps=200 reward=122830.00 time= 14.543s
+RUN  pso map=1 agents=10 episode=1
+  TIMEOUT   steps=200 reward=139074.00 time= 14.494s
+RUN  pso map=1 agents=10 episode=2
+  COLLISION steps= 48 reward=  5206.00 time=  3.517s
+RUN  pso map=1 agents=10 episode=3
+  TIMEOUT   steps=200 reward= 81052.00 time= 14.592s
+RUN  pso map=1 agents=10 episode=4
+  SUCCESS   steps= 89 reward= 39442.00 time=  6.491s
+RUN  pso map=1 agents=10 episode=5
+  TIMEOUT   steps=200 reward=113344.00 time= 14.563s
+RUN  pso map=1 agents=10 episode=6
+  TIMEOUT   steps=200 reward=128698.00 time= 14.571s
+RUN  pso map=1 agents=10 episode=7
+  TIMEOUT   steps=200 reward=114626.00 time= 14.587s
+RUN  pso map=1 agents=10 episode=8
+  TIMEOUT   steps=200 reward=126068.00 time= 14.515s
+RUN  pso map=1 agents=10 episode=9
+  TIMEOUT   steps=200 reward=117030.00 time= 14.546s
+RUN  pso map=2 agents=10 episode=0
+  TIMEOUT   steps=200 reward=132200.00 time= 11.785s
+RUN  pso map=2 agents=10 episode=1
+  TIMEOUT   steps=200 reward=107496.00 time= 11.829s
+RUN  pso map=2 agents=10 episode=2
+  TIMEOUT   steps=200 reward=139506.00 time= 11.818s
+RUN  pso map=2 agents=10 episode=3
+  TIMEOUT   steps=200 reward=110124.00 time= 11.852s
+RUN  pso map=2 agents=10 episode=4
+  TIMEOUT   steps=200 reward=106142.00 time= 11.861s
+RUN  pso map=2 agents=10 episode=5
+  TIMEOUT   steps=200 reward=136158.00 time= 11.785s
+RUN  pso map=2 agents=10 episode=6
+  TIMEOUT   steps=200 reward=138768.00 time= 11.771s
+RUN  pso map=2 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 61242.00 time= 11.863s
+RUN  pso map=2 agents=10 episode=8
+  SUCCESS   steps= 86 reward= 45660.00 time=  5.089s
+RUN  pso map=2 agents=10 episode=9
+  TIMEOUT   steps=200 reward=129340.00 time= 11.789s
+RUN  cpso map=0 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 40464.00 time= 12.815s
+RUN  cpso map=0 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 64870.00 time= 12.749s
+RUN  cpso map=0 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 59222.00 time= 12.772s
+RUN  cpso map=0 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 44952.00 time= 12.801s
+RUN  cpso map=0 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 63484.00 time= 12.757s
+RUN  cpso map=0 agents=5 episode=5
+  SUCCESS   steps= 64 reward=  8476.00 time=  4.115s
+RUN  cpso map=0 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 53714.00 time= 12.782s
+RUN  cpso map=0 agents=5 episode=7
+  SUCCESS   steps= 80 reward= 14938.00 time=  5.143s
+RUN  cpso map=0 agents=5 episode=8
+  SUCCESS   steps= 74 reward=  7902.00 time=  4.756s
+RUN  cpso map=0 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 59732.00 time= 12.788s
+RUN  cpso map=1 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 70374.00 time= 15.447s
+RUN  cpso map=1 agents=5 episode=1
+  SUCCESS   steps= 61 reward=  6662.00 time=  4.753s
+RUN  cpso map=1 agents=5 episode=2
+  SUCCESS   steps=105 reward= 20410.00 time=  8.162s
+RUN  cpso map=1 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 54720.00 time= 15.490s
+RUN  cpso map=1 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 60018.00 time= 15.464s
+RUN  cpso map=1 agents=5 episode=5
+  TIMEOUT   steps=200 reward= 61614.00 time= 15.472s
+RUN  cpso map=1 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 68670.00 time= 15.472s
+RUN  cpso map=1 agents=5 episode=7
+  TIMEOUT   steps=200 reward= 63864.00 time= 15.516s
+RUN  cpso map=1 agents=5 episode=8
+  TIMEOUT   steps=200 reward= 59276.00 time= 15.458s
+RUN  cpso map=1 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 58022.00 time= 15.444s
+RUN  cpso map=2 agents=5 episode=0
+  SUCCESS   steps= 74 reward= 12932.00 time=  4.744s
+RUN  cpso map=2 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 46062.00 time= 12.797s
+RUN  cpso map=2 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 28372.00 time= 12.819s
+RUN  cpso map=2 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 58962.00 time= 12.754s
+RUN  cpso map=2 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 55030.00 time= 12.780s
+RUN  cpso map=2 agents=5 episode=5
+  SUCCESS   steps= 56 reward= 11308.00 time=  3.586s
+RUN  cpso map=2 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 46472.00 time= 12.770s
+RUN  cpso map=2 agents=5 episode=7
+  SUCCESS   steps= 36 reward=  2586.00 time=  2.314s
+RUN  cpso map=2 agents=5 episode=8
+  SUCCESS   steps= 88 reward= 14784.00 time=  5.647s
+RUN  cpso map=2 agents=5 episode=9
+  SUCCESS   steps= 65 reward=  4444.00 time=  4.179s
+RUN  cpso map=0 agents=10 episode=0
+  TIMEOUT   steps=200 reward= 94144.00 time= 12.896s
+RUN  cpso map=0 agents=10 episode=1
+  TIMEOUT   steps=200 reward= 66072.00 time= 12.907s
+RUN  cpso map=0 agents=10 episode=2
+  TIMEOUT   steps=200 reward= 57122.00 time= 12.913s
+RUN  cpso map=0 agents=10 episode=3
+  TIMEOUT   steps=200 reward=125706.00 time= 12.836s
+RUN  cpso map=0 agents=10 episode=4
+  TIMEOUT   steps=200 reward= 88586.00 time= 12.888s
+RUN  cpso map=0 agents=10 episode=5
+  TIMEOUT   steps=200 reward=103636.00 time= 12.908s
+RUN  cpso map=0 agents=10 episode=6
+  TIMEOUT   steps=200 reward=121098.00 time= 12.891s
+RUN  cpso map=0 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 80756.00 time= 12.909s
+RUN  cpso map=0 agents=10 episode=8
+  TIMEOUT   steps=200 reward= 76016.00 time= 12.910s
+RUN  cpso map=0 agents=10 episode=9
+  TIMEOUT   steps=200 reward=127222.00 time= 12.844s
+RUN  cpso map=1 agents=10 episode=0
+  TIMEOUT   steps=200 reward=133864.00 time= 15.589s
+RUN  cpso map=1 agents=10 episode=1
+  TIMEOUT   steps=200 reward=142032.00 time= 15.548s
+RUN  cpso map=1 agents=10 episode=2
+  SUCCESS   steps= 75 reward= 26392.00 time=  5.881s
+RUN  cpso map=1 agents=10 episode=3
+  TIMEOUT   steps=200 reward= 72734.00 time= 15.661s
+RUN  cpso map=1 agents=10 episode=4
+  SUCCESS   steps= 85 reward= 39642.00 time=  6.646s
+RUN  cpso map=1 agents=10 episode=5
+  TIMEOUT   steps=200 reward=108684.00 time= 15.599s
+RUN  cpso map=1 agents=10 episode=6
+  TIMEOUT   steps=200 reward=127596.00 time= 15.589s
+RUN  cpso map=1 agents=10 episode=7
+  TIMEOUT   steps=200 reward=115162.00 time= 15.601s
+RUN  cpso map=1 agents=10 episode=8
+  TIMEOUT   steps=200 reward=129536.00 time= 15.543s
+RUN  cpso map=1 agents=10 episode=9
+  TIMEOUT   steps=200 reward=119986.00 time= 15.577s
+RUN  cpso map=2 agents=10 episode=0
+  TIMEOUT   steps=200 reward=133032.00 time= 12.803s
+RUN  cpso map=2 agents=10 episode=1
+  TIMEOUT   steps=200 reward=108460.00 time= 12.876s
+RUN  cpso map=2 agents=10 episode=2
+  TIMEOUT   steps=200 reward=140046.00 time= 12.793s
+RUN  cpso map=2 agents=10 episode=3
+  TIMEOUT   steps=200 reward=113456.00 time= 12.849s
+RUN  cpso map=2 agents=10 episode=4
+  TIMEOUT   steps=200 reward=106842.00 time= 12.862s
+RUN  cpso map=2 agents=10 episode=5
+  TIMEOUT   steps=200 reward=124332.00 time= 12.843s
+RUN  cpso map=2 agents=10 episode=6
+  SUCCESS   steps=128 reward= 73090.00 time=  8.245s
+RUN  cpso map=2 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 60784.00 time= 12.912s
+RUN  cpso map=2 agents=10 episode=8
+  SUCCESS   steps= 90 reward= 49122.00 time=  5.793s
+RUN  cpso map=2 agents=10 episode=9
+  TIMEOUT   steps=200 reward=135910.00 time= 12.805s
+RUN  abcl map=0 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 40240.00 time= 32.906s
+RUN  abcl map=0 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 64976.00 time= 34.411s
+RUN  abcl map=0 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 60952.00 time= 33.986s
+RUN  abcl map=0 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 45460.00 time= 33.809s
+RUN  abcl map=0 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 63060.00 time= 34.341s
+RUN  abcl map=0 agents=5 episode=5
+  SUCCESS   steps= 63 reward=  8730.00 time=  9.692s
+RUN  abcl map=0 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 57956.00 time= 33.630s
+RUN  abcl map=0 agents=5 episode=7
+  SUCCESS   steps= 75 reward= 14054.00 time= 12.026s
+RUN  abcl map=0 agents=5 episode=8
+  SUCCESS   steps= 99 reward= 17442.00 time= 15.428s
+RUN  abcl map=0 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 55302.00 time= 33.284s
+RUN  abcl map=1 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 70368.00 time= 41.747s
+RUN  abcl map=1 agents=5 episode=1
+  SUCCESS   steps= 66 reward=  7864.00 time= 12.282s
+RUN  abcl map=1 agents=5 episode=2
+  SUCCESS   steps= 78 reward= 15662.00 time= 15.298s
+RUN  abcl map=1 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 54602.00 time= 40.031s
+RUN  abcl map=1 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 60616.00 time= 40.857s
+RUN  abcl map=1 agents=5 episode=5
+  TIMEOUT   steps=200 reward= 61386.00 time= 40.931s
+RUN  abcl map=1 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 68996.00 time= 41.892s
+RUN  abcl map=1 agents=5 episode=7
+  TIMEOUT   steps=200 reward= 63738.00 time= 40.638s
+RUN  abcl map=1 agents=5 episode=8
+  TIMEOUT   steps=200 reward= 55752.00 time= 38.925s
+RUN  abcl map=1 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 57796.00 time= 40.397s
+RUN  abcl map=2 agents=5 episode=0
+  SUCCESS   steps= 74 reward= 12928.00 time= 11.628s
+RUN  abcl map=2 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 50166.00 time= 33.377s
+RUN  abcl map=2 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 28408.00 time= 32.345s
+RUN  abcl map=2 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 58870.00 time= 34.469s
+RUN  abcl map=2 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 61932.00 time= 33.889s
+RUN  abcl map=2 agents=5 episode=5
+  SUCCESS   steps= 56 reward= 11296.00 time=  9.211s
+RUN  abcl map=2 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 46548.00 time= 33.982s
+RUN  abcl map=2 agents=5 episode=7
+  SUCCESS   steps= 36 reward=  2578.00 time=  5.217s
+RUN  abcl map=2 agents=5 episode=8
+  SUCCESS   steps=115 reward= 26454.00 time= 18.812s
+RUN  abcl map=2 agents=5 episode=9
+  SUCCESS   steps= 65 reward=  6284.00 time=  9.674s
+RUN  abcl map=0 agents=10 episode=0
+  TIMEOUT   steps=200 reward= 81200.00 time= 30.641s
+RUN  abcl map=0 agents=10 episode=1
+  TIMEOUT   steps=200 reward= 57558.00 time= 30.755s
+RUN  abcl map=0 agents=10 episode=2
+  TIMEOUT   steps=200 reward= 49192.00 time= 29.060s
+RUN  abcl map=0 agents=10 episode=3
+  TIMEOUT   steps=200 reward=121852.00 time= 33.438s
+RUN  abcl map=0 agents=10 episode=4
+  TIMEOUT   steps=200 reward= 91248.00 time= 32.518s
+RUN  abcl map=0 agents=10 episode=5
+  TIMEOUT   steps=200 reward= 92198.00 time= 32.450s
+RUN  abcl map=0 agents=10 episode=6
+  TIMEOUT   steps=200 reward=130444.00 time= 33.340s
+RUN  abcl map=0 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 71664.00 time= 30.287s
+RUN  abcl map=0 agents=10 episode=8
+  TIMEOUT   steps=200 reward= 73900.00 time= 31.804s
+RUN  abcl map=0 agents=10 episode=9
+  TIMEOUT   steps=200 reward=122958.00 time= 33.849s
+RUN  abcl map=1 agents=10 episode=0
+  TIMEOUT   steps=200 reward=127710.00 time= 40.119s
+RUN  abcl map=1 agents=10 episode=1
+  TIMEOUT   steps=200 reward=142672.00 time= 40.593s
+RUN  abcl map=1 agents=10 episode=2
+  COLLISION steps= 68 reward= 15450.00 time= 12.263s
+RUN  abcl map=1 agents=10 episode=3
+  TIMEOUT   steps=200 reward= 77474.00 time= 38.945s
+RUN  abcl map=1 agents=10 episode=4
+  SUCCESS   steps= 89 reward= 34718.00 time= 16.606s
+RUN  abcl map=1 agents=10 episode=5
+  TIMEOUT   steps=200 reward=106860.00 time= 39.322s
+RUN  abcl map=1 agents=10 episode=6
+  TIMEOUT   steps=200 reward=138194.00 time= 40.854s
+RUN  abcl map=1 agents=10 episode=7
+  TIMEOUT   steps=200 reward=105170.00 time= 40.806s
+RUN  abcl map=1 agents=10 episode=8
+  TIMEOUT   steps=200 reward=126088.00 time= 39.930s
+RUN  abcl map=1 agents=10 episode=9
+  TIMEOUT   steps=200 reward=110592.00 time= 39.554s
+RUN  abcl map=2 agents=10 episode=0
+  TIMEOUT   steps=200 reward=132622.00 time= 33.288s
+RUN  abcl map=2 agents=10 episode=1
+  TIMEOUT   steps=200 reward=105090.00 time= 33.265s
+RUN  abcl map=2 agents=10 episode=2
+  TIMEOUT   steps=200 reward=136728.00 time= 33.668s
+RUN  abcl map=2 agents=10 episode=3
+  TIMEOUT   steps=200 reward=109112.00 time= 32.897s
+RUN  abcl map=2 agents=10 episode=4
+  TIMEOUT   steps=200 reward=106442.00 time= 33.107s
+RUN  abcl map=2 agents=10 episode=5
+  TIMEOUT   steps=200 reward=122118.00 time= 33.292s
+RUN  abcl map=2 agents=10 episode=6
+  SUCCESS   steps= 90 reward= 39956.00 time= 14.434s
+RUN  abcl map=2 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 57038.00 time= 30.513s
+RUN  abcl map=2 agents=10 episode=8
+  SUCCESS   steps= 82 reward= 39828.00 time= 13.096s
+RUN  abcl map=2 agents=10 episode=9
+  TIMEOUT   steps=200 reward=134544.00 time= 33.254s
+RUN  origin_abc map=0 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 40560.00 time= 28.202s
+RUN  origin_abc map=0 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 64874.00 time= 29.774s
+RUN  origin_abc map=0 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 59972.00 time= 28.584s
+RUN  origin_abc map=0 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 45246.00 time= 28.725s
+RUN  origin_abc map=0 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 63458.00 time= 29.635s
+RUN  origin_abc map=0 agents=5 episode=5
+  SUCCESS   steps= 63 reward=  7966.00 time=  8.673s
+RUN  origin_abc map=0 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 57750.00 time= 29.487s
+RUN  origin_abc map=0 agents=5 episode=7
+  SUCCESS   steps= 76 reward= 13474.00 time= 10.726s
+RUN  origin_abc map=0 agents=5 episode=8
+  SUCCESS   steps=102 reward= 18842.00 time= 14.472s
+RUN  origin_abc map=0 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 55408.00 time= 29.093s
+RUN  origin_abc map=1 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 70372.00 time= 36.126s
+RUN  origin_abc map=1 agents=5 episode=1
+  SUCCESS   steps= 65 reward=  7576.00 time= 10.711s
+RUN  origin_abc map=1 agents=5 episode=2
+  SUCCESS   steps= 78 reward= 14154.00 time= 12.931s
+RUN  origin_abc map=1 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 54482.00 time= 35.514s
+RUN  origin_abc map=1 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 60844.00 time= 34.714s
+RUN  origin_abc map=1 agents=5 episode=5
+  TIMEOUT   steps=200 reward= 61394.00 time= 35.794s
+RUN  origin_abc map=1 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 68996.00 time= 35.965s
+RUN  origin_abc map=1 agents=5 episode=7
+  TIMEOUT   steps=200 reward= 63852.00 time= 33.829s
+RUN  origin_abc map=1 agents=5 episode=8
+  TIMEOUT   steps=200 reward= 55760.00 time= 33.494s
+RUN  origin_abc map=1 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 57798.00 time= 35.523s
+RUN  origin_abc map=2 agents=5 episode=0
+  SUCCESS   steps= 75 reward= 13322.00 time= 10.551s
+RUN  origin_abc map=2 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 50060.00 time= 28.983s
+RUN  origin_abc map=2 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 28074.00 time= 27.189s
+RUN  origin_abc map=2 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 58764.00 time= 29.326s
+RUN  origin_abc map=2 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 61724.00 time= 29.666s
+RUN  origin_abc map=2 agents=5 episode=5
+  SUCCESS   steps= 56 reward= 11184.00 time=  7.740s
+RUN  origin_abc map=2 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 46382.00 time= 28.696s
+RUN  origin_abc map=2 agents=5 episode=7
+  SUCCESS   steps= 36 reward=  2582.00 time=  4.880s
+RUN  origin_abc map=2 agents=5 episode=8
+  SUCCESS   steps=114 reward= 24350.00 time= 16.321s
+RUN  origin_abc map=2 agents=5 episode=9
+  SUCCESS   steps= 76 reward=  9962.00 time= 10.289s
+RUN  origin_abc map=0 agents=10 episode=0
+  TIMEOUT   steps=200 reward= 89982.00 time= 27.628s
+RUN  origin_abc map=0 agents=10 episode=1
+  TIMEOUT   steps=200 reward= 56816.00 time= 27.335s
+RUN  origin_abc map=0 agents=10 episode=2
+  TIMEOUT   steps=200 reward= 62406.00 time= 26.918s
+RUN  origin_abc map=0 agents=10 episode=3
+  TIMEOUT   steps=200 reward=127112.00 time= 28.882s
+RUN  origin_abc map=0 agents=10 episode=4
+  TIMEOUT   steps=200 reward= 92598.00 time= 28.221s
+RUN  origin_abc map=0 agents=10 episode=5
+  TIMEOUT   steps=200 reward= 94460.00 time= 28.623s
+RUN  origin_abc map=0 agents=10 episode=6
+  TIMEOUT   steps=200 reward=123274.00 time= 29.395s
+RUN  origin_abc map=0 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 79184.00 time= 26.843s
+RUN  origin_abc map=0 agents=10 episode=8
+  TIMEOUT   steps=200 reward= 74628.00 time= 27.818s
+RUN  origin_abc map=0 agents=10 episode=9
+  TIMEOUT   steps=200 reward=124120.00 time= 29.446s
+RUN  origin_abc map=1 agents=10 episode=0
+  TIMEOUT   steps=200 reward=122420.00 time= 35.106s
+RUN  origin_abc map=1 agents=10 episode=1
+  TIMEOUT   steps=200 reward=142460.00 time= 35.323s
+RUN  origin_abc map=1 agents=10 episode=2
+  COLLISION steps= 73 reward= 19462.00 time= 12.386s
+RUN  origin_abc map=1 agents=10 episode=3
+  TIMEOUT   steps=200 reward= 78674.00 time= 33.740s
+RUN  origin_abc map=1 agents=10 episode=4
+  SUCCESS   steps= 97 reward= 43222.00 time= 16.520s
+RUN  origin_abc map=1 agents=10 episode=5
+  TIMEOUT   steps=200 reward=108088.00 time= 35.396s
+RUN  origin_abc map=1 agents=10 episode=6
+  TIMEOUT   steps=200 reward=135570.00 time= 35.864s
+RUN  origin_abc map=1 agents=10 episode=7
+  TIMEOUT   steps=200 reward=112066.00 time= 35.209s
+RUN  origin_abc map=1 agents=10 episode=8
+  TIMEOUT   steps=200 reward=126878.00 time= 35.624s
+RUN  origin_abc map=1 agents=10 episode=9
+  TIMEOUT   steps=200 reward=114284.00 time= 34.865s
+RUN  origin_abc map=2 agents=10 episode=0
+  TIMEOUT   steps=200 reward=135556.00 time= 29.565s
+RUN  origin_abc map=2 agents=10 episode=1
+  TIMEOUT   steps=200 reward=105784.00 time= 27.617s
+RUN  origin_abc map=2 agents=10 episode=2
+  TIMEOUT   steps=200 reward=130976.00 time= 29.632s
+RUN  origin_abc map=2 agents=10 episode=3
+  TIMEOUT   steps=200 reward=104810.00 time= 29.132s
+RUN  origin_abc map=2 agents=10 episode=4
+  TIMEOUT   steps=200 reward=116682.00 time= 28.551s
+RUN  origin_abc map=2 agents=10 episode=5
+  TIMEOUT   steps=200 reward=123016.00 time= 29.491s
+RUN  origin_abc map=2 agents=10 episode=6
+  TIMEOUT   steps=200 reward=135344.00 time= 29.490s
+RUN  origin_abc map=2 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 51652.00 time= 27.064s
+RUN  origin_abc map=2 agents=10 episode=8
+  SUCCESS   steps= 91 reward= 47872.00 time= 13.122s
+RUN  origin_abc map=2 agents=10 episode=9
+  TIMEOUT   steps=200 reward=130654.00 time= 29.562s
+RUN  fixed_iabc map=0 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 40356.00 time= 41.888s
+RUN  fixed_iabc map=0 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 65092.00 time= 42.346s
+RUN  fixed_iabc map=0 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 61482.00 time= 42.506s
+RUN  fixed_iabc map=0 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 45468.00 time= 42.263s
+RUN  fixed_iabc map=0 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 63390.00 time= 43.140s
+RUN  fixed_iabc map=0 agents=5 episode=5
+  SUCCESS   steps= 62 reward=  8552.00 time= 12.798s
+RUN  fixed_iabc map=0 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 57850.00 time= 42.532s
+RUN  fixed_iabc map=0 agents=5 episode=7
+  SUCCESS   steps= 76 reward= 14348.00 time= 15.767s
+RUN  fixed_iabc map=0 agents=5 episode=8
+  SUCCESS   steps=100 reward= 18490.00 time= 20.929s
+RUN  fixed_iabc map=0 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 59842.00 time= 42.591s
+RUN  fixed_iabc map=1 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 70374.00 time= 49.059s
+RUN  fixed_iabc map=1 agents=5 episode=1
+  SUCCESS   steps= 65 reward=  7588.00 time= 15.115s
+RUN  fixed_iabc map=1 agents=5 episode=2
+  SUCCESS   steps= 78 reward= 14158.00 time= 18.168s
+RUN  fixed_iabc map=1 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 54606.00 time= 48.375s
+RUN  fixed_iabc map=1 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 60856.00 time= 48.957s
+RUN  fixed_iabc map=1 agents=5 episode=5
+  TIMEOUT   steps=200 reward= 61490.00 time= 47.822s
+RUN  fixed_iabc map=1 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 69108.00 time= 48.377s
+RUN  fixed_iabc map=1 agents=5 episode=7
+  TIMEOUT   steps=200 reward= 63848.00 time= 47.829s
+RUN  fixed_iabc map=1 agents=5 episode=8
+  TIMEOUT   steps=200 reward= 55750.00 time= 48.712s
+RUN  fixed_iabc map=1 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 58096.00 time= 49.044s
+RUN  fixed_iabc map=2 agents=5 episode=0
+  SUCCESS   steps= 76 reward= 13710.00 time= 15.755s
+RUN  fixed_iabc map=2 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 50060.00 time= 42.243s
+RUN  fixed_iabc map=2 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 28140.00 time= 41.649s
+RUN  fixed_iabc map=2 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 58876.00 time= 42.123s
+RUN  fixed_iabc map=2 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 55568.00 time= 42.264s
+RUN  fixed_iabc map=2 agents=5 episode=5
+  SUCCESS   steps= 56 reward= 11298.00 time= 11.502s
+RUN  fixed_iabc map=2 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 46650.00 time= 42.127s
+RUN  fixed_iabc map=2 agents=5 episode=7
+  SUCCESS   steps= 36 reward=  2578.00 time=  7.376s
+RUN  fixed_iabc map=2 agents=5 episode=8
+  SUCCESS   steps=116 reward= 26630.00 time= 24.178s
+RUN  fixed_iabc map=2 agents=5 episode=9
+  SUCCESS   steps= 65 reward=  4878.00 time= 13.344s
+RUN  fixed_iabc map=0 agents=10 episode=0
+  TIMEOUT   steps=200 reward= 88884.00 time= 41.513s
+RUN  fixed_iabc map=0 agents=10 episode=1
+  TIMEOUT   steps=200 reward= 62076.00 time= 41.217s
+RUN  fixed_iabc map=0 agents=10 episode=2
+  TIMEOUT   steps=200 reward= 62496.00 time= 41.093s
+RUN  fixed_iabc map=0 agents=10 episode=3
+  TIMEOUT   steps=200 reward=128148.00 time= 42.437s
+RUN  fixed_iabc map=0 agents=10 episode=4
+  TIMEOUT   steps=200 reward= 89612.00 time= 41.510s
+RUN  fixed_iabc map=0 agents=10 episode=5
+  TIMEOUT   steps=200 reward=101478.00 time= 41.630s
+RUN  fixed_iabc map=0 agents=10 episode=6
+  TIMEOUT   steps=200 reward=129590.00 time= 43.183s
+RUN  fixed_iabc map=0 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 81134.00 time= 41.233s
+RUN  fixed_iabc map=0 agents=10 episode=8
+  TIMEOUT   steps=200 reward= 78204.00 time= 41.335s
+RUN  fixed_iabc map=0 agents=10 episode=9
+  TIMEOUT   steps=200 reward=126678.00 time= 42.027s
+RUN  fixed_iabc map=1 agents=10 episode=0
+  TIMEOUT   steps=200 reward=132112.00 time= 48.136s
+RUN  fixed_iabc map=1 agents=10 episode=1
+  TIMEOUT   steps=200 reward=145164.00 time= 48.613s
+RUN  fixed_iabc map=1 agents=10 episode=2
+  SUCCESS   steps= 76 reward= 27142.00 time= 17.647s
+RUN  fixed_iabc map=1 agents=10 episode=3
+  TIMEOUT   steps=200 reward= 81674.00 time= 46.664s
+RUN  fixed_iabc map=1 agents=10 episode=4
+  SUCCESS   steps= 87 reward= 41192.00 time= 20.303s
+RUN  fixed_iabc map=1 agents=10 episode=5
+  TIMEOUT   steps=200 reward=105628.00 time= 47.170s
+RUN  fixed_iabc map=1 agents=10 episode=6
+  TIMEOUT   steps=200 reward=141084.00 time= 48.286s
+RUN  fixed_iabc map=1 agents=10 episode=7
+  TIMEOUT   steps=200 reward=114674.00 time= 47.173s
+RUN  fixed_iabc map=1 agents=10 episode=8
+  TIMEOUT   steps=200 reward=128746.00 time= 48.301s
+RUN  fixed_iabc map=1 agents=10 episode=9
+  TIMEOUT   steps=200 reward=118578.00 time= 47.665s
+RUN  fixed_iabc map=2 agents=10 episode=0
+  TIMEOUT   steps=200 reward=137342.00 time= 43.458s
+RUN  fixed_iabc map=2 agents=10 episode=1
+  TIMEOUT   steps=200 reward=106772.00 time= 41.503s
+RUN  fixed_iabc map=2 agents=10 episode=2
+  TIMEOUT   steps=200 reward=136590.00 time= 42.484s
+RUN  fixed_iabc map=2 agents=10 episode=3
+  COLLISION steps=125 reward= 54538.00 time= 26.306s
+RUN  fixed_iabc map=2 agents=10 episode=4
+  TIMEOUT   steps=200 reward=107484.00 time= 41.969s
+RUN  fixed_iabc map=2 agents=10 episode=5
+  TIMEOUT   steps=200 reward=124702.00 time= 42.395s
+RUN  fixed_iabc map=2 agents=10 episode=6
+  TIMEOUT   steps=200 reward=138872.00 time= 43.150s
+RUN  fixed_iabc map=2 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 63000.00 time= 41.187s
+RUN  fixed_iabc map=2 agents=10 episode=8
+  SUCCESS   steps= 87 reward= 46438.00 time= 18.075s
+RUN  fixed_iabc map=2 agents=10 episode=9
+  TIMEOUT   steps=200 reward=135682.00 time= 43.139s
+RUN  manual_iabc map=0 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 40570.00 time= 41.979s
+RUN  manual_iabc map=0 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 64976.00 time= 42.422s
+RUN  manual_iabc map=0 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 61166.00 time= 42.491s
+RUN  manual_iabc map=0 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 45352.00 time= 41.890s
+RUN  manual_iabc map=0 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 63606.00 time= 42.930s
+RUN  manual_iabc map=0 agents=5 episode=5
+  SUCCESS   steps= 63 reward=  8834.00 time= 13.030s
+RUN  manual_iabc map=0 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 57946.00 time= 42.629s
+RUN  manual_iabc map=0 agents=5 episode=7
+  SUCCESS   steps= 77 reward= 14518.00 time= 15.963s
+RUN  manual_iabc map=0 agents=5 episode=8
+  SUCCESS   steps=101 reward= 18570.00 time= 21.179s
+RUN  manual_iabc map=0 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 59840.00 time= 42.696s
+RUN  manual_iabc map=1 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 70364.00 time= 49.118s
+RUN  manual_iabc map=1 agents=5 episode=1
+  SUCCESS   steps= 64 reward=  7192.00 time= 14.876s
+RUN  manual_iabc map=1 agents=5 episode=2
+  SUCCESS   steps= 78 reward= 14370.00 time= 18.182s
+RUN  manual_iabc map=1 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 54712.00 time= 48.474s
+RUN  manual_iabc map=1 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 60952.00 time= 48.941s
+RUN  manual_iabc map=1 agents=5 episode=5
+  TIMEOUT   steps=200 reward= 61394.00 time= 47.836s
+RUN  manual_iabc map=1 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 68784.00 time= 48.549s
+RUN  manual_iabc map=1 agents=5 episode=7
+  TIMEOUT   steps=200 reward= 63846.00 time= 47.884s
+RUN  manual_iabc map=1 agents=5 episode=8
+  TIMEOUT   steps=200 reward= 55834.00 time= 48.748s
+RUN  manual_iabc map=1 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 57038.00 time= 49.010s
+RUN  manual_iabc map=2 agents=5 episode=0
+  SUCCESS   steps= 76 reward= 13710.00 time= 15.755s
+RUN  manual_iabc map=2 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 50272.00 time= 42.436s
+RUN  manual_iabc map=2 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 28320.00 time= 41.683s
+RUN  manual_iabc map=2 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 58978.00 time= 42.269s
+RUN  manual_iabc map=2 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 54690.00 time= 42.237s
+RUN  manual_iabc map=2 agents=5 episode=5
+  SUCCESS   steps= 56 reward= 11300.00 time= 11.522s
+RUN  manual_iabc map=2 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 46754.00 time= 42.260s
+RUN  manual_iabc map=2 agents=5 episode=7
+  SUCCESS   steps= 36 reward=  2582.00 time=  7.378s
+RUN  manual_iabc map=2 agents=5 episode=8
+  SUCCESS   steps=112 reward= 24760.00 time= 23.366s
+RUN  manual_iabc map=2 agents=5 episode=9
+  SUCCESS   steps= 63 reward=  4856.00 time= 12.977s
+RUN  manual_iabc map=0 agents=10 episode=0
+  TIMEOUT   steps=200 reward= 93096.00 time= 41.522s
+RUN  manual_iabc map=0 agents=10 episode=1
+  TIMEOUT   steps=200 reward= 63458.00 time= 41.372s
+RUN  manual_iabc map=0 agents=10 episode=2
+  TIMEOUT   steps=200 reward= 62728.00 time= 41.238s
+RUN  manual_iabc map=0 agents=10 episode=3
+  TIMEOUT   steps=200 reward=128184.00 time= 42.144s
+RUN  manual_iabc map=0 agents=10 episode=4
+  TIMEOUT   steps=200 reward= 99098.00 time= 41.812s
+RUN  manual_iabc map=0 agents=10 episode=5
+  TIMEOUT   steps=200 reward=102888.00 time= 41.614s
+RUN  manual_iabc map=0 agents=10 episode=6
+  TIMEOUT   steps=200 reward=132246.00 time= 42.727s
+RUN  manual_iabc map=0 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 82212.00 time= 41.335s
+RUN  manual_iabc map=0 agents=10 episode=8
+  TIMEOUT   steps=200 reward= 78824.00 time= 41.430s
+RUN  manual_iabc map=0 agents=10 episode=9
+  TIMEOUT   steps=200 reward=126046.00 time= 42.168s
+RUN  manual_iabc map=1 agents=10 episode=0
+  TIMEOUT   steps=200 reward=108650.00 time= 47.622s
+RUN  manual_iabc map=1 agents=10 episode=1
+  TIMEOUT   steps=200 reward=131950.00 time= 47.987s
+RUN  manual_iabc map=1 agents=10 episode=2
+  SUCCESS   steps= 69 reward= 20924.00 time= 15.996s
+RUN  manual_iabc map=1 agents=10 episode=3
+  TIMEOUT   steps=200 reward= 79074.00 time= 46.758s
+RUN  manual_iabc map=1 agents=10 episode=4
+  SUCCESS   steps= 91 reward= 41742.00 time= 21.315s
+RUN  manual_iabc map=1 agents=10 episode=5
+  TIMEOUT   steps=200 reward=108586.00 time= 47.523s
+RUN  manual_iabc map=1 agents=10 episode=6
+  TIMEOUT   steps=200 reward=143118.00 time= 48.337s
+RUN  manual_iabc map=1 agents=10 episode=7
+  TIMEOUT   steps=200 reward=113614.00 time= 47.331s
+RUN  manual_iabc map=1 agents=10 episode=8
+  TIMEOUT   steps=200 reward=129080.00 time= 48.261s
+RUN  manual_iabc map=1 agents=10 episode=9
+  TIMEOUT   steps=200 reward=116088.00 time= 47.875s
+RUN  manual_iabc map=2 agents=10 episode=0
+  TIMEOUT   steps=200 reward=133684.00 time= 42.899s
+RUN  manual_iabc map=2 agents=10 episode=1
+  TIMEOUT   steps=200 reward=107190.00 time= 41.494s
+RUN  manual_iabc map=2 agents=10 episode=2
+  TIMEOUT   steps=200 reward=139162.00 time= 42.533s
+RUN  manual_iabc map=2 agents=10 episode=3
+  TIMEOUT   steps=200 reward=114062.00 time= 42.380s
+RUN  manual_iabc map=2 agents=10 episode=4
+  TIMEOUT   steps=200 reward=106544.00 time= 41.824s
+RUN  manual_iabc map=2 agents=10 episode=5
+  TIMEOUT   steps=200 reward=134636.00 time= 43.181s
+RUN  manual_iabc map=2 agents=10 episode=6
+  TIMEOUT   steps=200 reward=140920.00 time= 43.276s
+RUN  manual_iabc map=2 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 63518.00 time= 41.221s
+RUN  manual_iabc map=2 agents=10 episode=8
+  SUCCESS   steps= 85 reward= 44638.00 time= 17.670s
+RUN  manual_iabc map=2 agents=10 episode=9
+  TIMEOUT   steps=200 reward=136118.00 time= 43.262s
+RUN  ppo_iabc map=0 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 40230.00 time= 43.279s
+RUN  ppo_iabc map=0 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 65096.00 time= 43.814s
+RUN  ppo_iabc map=0 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 61268.00 time= 44.016s
+RUN  ppo_iabc map=0 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 45580.00 time= 43.313s
+RUN  ppo_iabc map=0 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 63590.00 time= 44.457s
+RUN  ppo_iabc map=0 agents=5 episode=5
+  SUCCESS   steps= 62 reward=  8440.00 time= 13.268s
+RUN  ppo_iabc map=0 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 58074.00 time= 44.018s
+RUN  ppo_iabc map=0 agents=5 episode=7
+  SUCCESS   steps= 75 reward= 13950.00 time= 16.153s
+RUN  ppo_iabc map=0 agents=5 episode=8
+  SUCCESS   steps=103 reward= 19454.00 time= 22.373s
+RUN  ppo_iabc map=0 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 59844.00 time= 44.851s
+RUN  ppo_iabc map=1 agents=5 episode=0
+  TIMEOUT   steps=200 reward= 70380.00 time= 50.662s
+RUN  ppo_iabc map=1 agents=5 episode=1
+  SUCCESS   steps= 65 reward=  7684.00 time= 15.542s
+RUN  ppo_iabc map=1 agents=5 episode=2
+  SUCCESS   steps= 86 reward= 14474.00 time= 20.797s
+RUN  ppo_iabc map=1 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 54706.00 time= 49.931s
+RUN  ppo_iabc map=1 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 60856.00 time= 50.368s
+RUN  ppo_iabc map=1 agents=5 episode=5
+  TIMEOUT   steps=200 reward= 61384.00 time= 49.264s
+RUN  ppo_iabc map=1 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 69110.00 time= 49.958s
+RUN  ppo_iabc map=1 agents=5 episode=7
+  TIMEOUT   steps=200 reward= 63846.00 time= 49.439s
+RUN  ppo_iabc map=1 agents=5 episode=8
+  TIMEOUT   steps=200 reward= 55950.00 time= 50.338s
+RUN  ppo_iabc map=1 agents=5 episode=9
+  TIMEOUT   steps=200 reward= 56604.00 time= 50.629s
+RUN  ppo_iabc map=2 agents=5 episode=0
+  SUCCESS   steps= 75 reward= 13424.00 time= 16.229s
+RUN  ppo_iabc map=2 agents=5 episode=1
+  TIMEOUT   steps=200 reward= 50390.00 time= 43.991s
+RUN  ppo_iabc map=2 agents=5 episode=2
+  TIMEOUT   steps=200 reward= 28062.00 time= 43.575s
+RUN  ppo_iabc map=2 agents=5 episode=3
+  TIMEOUT   steps=200 reward= 58970.00 time= 44.199s
+RUN  ppo_iabc map=2 agents=5 episode=4
+  TIMEOUT   steps=200 reward= 55670.00 time= 43.912s
+RUN  ppo_iabc map=2 agents=5 episode=5
+  SUCCESS   steps= 56 reward= 11298.00 time= 11.996s
+RUN  ppo_iabc map=2 agents=5 episode=6
+  TIMEOUT   steps=200 reward= 46768.00 time= 43.924s
+RUN  ppo_iabc map=2 agents=5 episode=7
+  SUCCESS   steps= 36 reward=  2584.00 time=  7.658s
+RUN  ppo_iabc map=2 agents=5 episode=8
+  SUCCESS   steps=112 reward= 24848.00 time= 24.294s
+RUN  ppo_iabc map=2 agents=5 episode=9
+  SUCCESS   steps= 63 reward=  5826.00 time= 13.500s
+RUN  ppo_iabc map=0 agents=10 episode=0
+  TIMEOUT   steps=200 reward= 98668.00 time= 43.532s
+RUN  ppo_iabc map=0 agents=10 episode=1
+  TIMEOUT   steps=200 reward= 61304.00 time= 43.106s
+RUN  ppo_iabc map=0 agents=10 episode=2
+  TIMEOUT   steps=200 reward= 50590.00 time= 43.020s
+RUN  ppo_iabc map=0 agents=10 episode=3
+  TIMEOUT   steps=200 reward=128388.00 time= 44.002s
+RUN  ppo_iabc map=0 agents=10 episode=4
+  TIMEOUT   steps=200 reward= 94372.00 time= 43.463s
+RUN  ppo_iabc map=0 agents=10 episode=5
+  TIMEOUT   steps=200 reward= 99578.00 time= 43.474s
+RUN  ppo_iabc map=0 agents=10 episode=6
+  TIMEOUT   steps=200 reward=133228.00 time= 44.583s
+RUN  ppo_iabc map=0 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 83432.00 time= 42.982s
+RUN  ppo_iabc map=0 agents=10 episode=8
+  TIMEOUT   steps=200 reward= 79486.00 time= 43.047s
+RUN  ppo_iabc map=0 agents=10 episode=9
+  TIMEOUT   steps=200 reward=125400.00 time= 43.760s
+RUN  ppo_iabc map=1 agents=10 episode=0
+  TIMEOUT   steps=200 reward=117974.00 time= 49.520s
+RUN  ppo_iabc map=1 agents=10 episode=1
+  TIMEOUT   steps=200 reward=144288.00 time= 50.738s
+RUN  ppo_iabc map=1 agents=10 episode=2
+  COLLISION steps= 49 reward=  5664.00 time= 11.727s
+RUN  ppo_iabc map=1 agents=10 episode=3
+  TIMEOUT   steps=200 reward= 81446.00 time= 48.472s
+RUN  ppo_iabc map=1 agents=10 episode=4
+  SUCCESS   steps= 87 reward= 39790.00 time= 21.052s
+RUN  ppo_iabc map=1 agents=10 episode=5
+  TIMEOUT   steps=200 reward=109772.00 time= 49.564s
+RUN  ppo_iabc map=1 agents=10 episode=6
+  TIMEOUT   steps=200 reward=141830.00 time= 50.284s
+RUN  ppo_iabc map=1 agents=10 episode=7
+  TIMEOUT   steps=200 reward=113836.00 time= 48.937s
+RUN  ppo_iabc map=1 agents=10 episode=8
+  TIMEOUT   steps=200 reward=127560.00 time= 50.219s
+RUN  ppo_iabc map=1 agents=10 episode=9
+  TIMEOUT   steps=200 reward=119116.00 time= 49.389s
+RUN  ppo_iabc map=2 agents=10 episode=0
+  TIMEOUT   steps=200 reward=132510.00 time= 44.958s
+RUN  ppo_iabc map=2 agents=10 episode=1
+  TIMEOUT   steps=200 reward=108056.00 time= 47.066s
+RUN  ppo_iabc map=2 agents=10 episode=2
+  TIMEOUT   steps=200 reward=139074.00 time= 60.074s
+RUN  ppo_iabc map=2 agents=10 episode=3
+  COLLISION steps=130 reward= 56626.00 time= 38.726s
+RUN  ppo_iabc map=2 agents=10 episode=4
+  TIMEOUT   steps=200 reward=118158.00 time= 59.217s
+RUN  ppo_iabc map=2 agents=10 episode=5
+  TIMEOUT   steps=200 reward=127500.00 time= 59.204s
+RUN  ppo_iabc map=2 agents=10 episode=6
+  TIMEOUT   steps=200 reward=138772.00 time= 45.282s
+RUN  ppo_iabc map=2 agents=10 episode=7
+  TIMEOUT   steps=200 reward= 62544.00 time= 43.122s
+RUN  ppo_iabc map=2 agents=10 episode=8
+  SUCCESS   steps= 88 reward= 47214.00 time= 19.382s
+RUN  ppo_iabc map=2 agents=10 episode=9
+  TIMEOUT   steps=200 reward=136864.00 time= 57.345s
+Episode results saved to: version2_results/20260513-101213/episodes.csv
+Summary saved to: version2_results/20260513-101213/summary.csv
+[DONE] Wed May 13 14:46:37 CST 2026 version2 full gpu

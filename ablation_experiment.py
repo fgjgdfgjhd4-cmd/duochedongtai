@@ -1,4 +1,5 @@
 import argparse
+import csv
 import os
 import random
 import time
@@ -197,6 +198,7 @@ def parse_args():
     parser.add_argument("--checkpoint", default="")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--output-dir", default="ablation_results")
+    parser.add_argument("--resume-dir", default="")
 
     parser.add_argument("--action-dim", type=int, default=3)
     parser.add_argument("--lr-actor", type=float, default=0.0003)
@@ -208,39 +210,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
-    args = parse_args()
-    if "ppo_iabc" in args.algorithms and not args.checkpoint:
-        raise ValueError("--checkpoint is required when running ppo_iabc.")
-
-    random.seed(args.seed)
-    np.random.seed(args.seed)
-    torch.manual_seed(args.seed)
-
-    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    output_dir = os.path.join(args.output_dir, timestamp)
-
-    scenarios = make_scenarios(args)
-    results = []
-    grouped = defaultdict(list)
-
-    for algorithm in args.algorithms:
-        for agent_num, map_index, episode, starts, targets in scenarios:
-            print(
-                f"Running {algorithm}: map={map_index}, agents={agent_num}, episode={episode}"
-            )
-            result = run_episode(
-                args,
-                algorithm,
-                episode,
-                map_index,
-                agent_num,
-                starts,
-                targets,
-            )
-            results.append(result)
-            grouped[(algorithm, map_index, agent_num)].append(result)
-
+def write_current_results(output_dir, results, grouped):
     episode_path = os.path.join(output_dir, "episodes.csv")
     write_episode_results(episode_path, results)
 
@@ -258,6 +228,87 @@ def main():
 
     summary_path = os.path.join(output_dir, "summary.csv")
     write_summary(summary_path, summary_rows)
+    return episode_path, summary_path
+
+
+def load_existing_results(output_dir):
+    episode_path = os.path.join(output_dir, "episodes.csv")
+    results = []
+    grouped = defaultdict(list)
+    completed = set()
+    if not os.path.exists(episode_path):
+        return results, grouped, completed
+
+    with open(episode_path, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            result = EpisodeResult(
+                algorithm=row["algorithm"],
+                map_index=int(row["map_index"]),
+                agent_num=int(row["agent_num"]),
+                episode=int(row["episode"]),
+                success=row["success"] == "True",
+                collision=row["collision"] == "True",
+                timeout=row["timeout"] == "True",
+                steps=int(row["steps"]),
+                reward=float(row["reward"]),
+                path_distance=float(row["path_distance"]),
+                elapsed_time=float(row["elapsed_time"]),
+                avg_step_time=float(row["avg_step_time"]),
+                probability_trace=[],
+            )
+            results.append(result)
+            key = (result.algorithm, result.map_index, result.agent_num)
+            grouped[key].append(result)
+            completed.add((result.algorithm, result.map_index, result.agent_num, result.episode))
+    return results, grouped, completed
+
+
+def main():
+    args = parse_args()
+    if "ppo_iabc" in args.algorithms and not args.checkpoint:
+        raise ValueError("--checkpoint is required when running ppo_iabc.")
+
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+
+    output_dir = args.resume_dir or os.path.join(
+        args.output_dir,
+        datetime.now().strftime("%Y%m%d-%H%M%S"),
+    )
+
+    scenarios = make_scenarios(args)
+    results, grouped, completed = load_existing_results(output_dir)
+    if completed:
+        print(f"Resuming from {output_dir}: {len(completed)} episodes already complete", flush=True)
+
+    for algorithm in args.algorithms:
+        for agent_num, map_index, episode, starts, targets in scenarios:
+            key = (algorithm, map_index, agent_num, episode)
+            if key in completed:
+                print(
+                    f"Skipping {algorithm}: map={map_index}, agents={agent_num}, episode={episode}",
+                    flush=True,
+                )
+                continue
+            print(
+                f"Running {algorithm}: map={map_index}, agents={agent_num}, episode={episode}",
+                flush=True,
+            )
+            result = run_episode(
+                args,
+                algorithm,
+                episode,
+                map_index,
+                agent_num,
+                starts,
+                targets,
+            )
+            results.append(result)
+            grouped[(algorithm, map_index, agent_num)].append(result)
+            write_current_results(output_dir, results, grouped)
+
+    episode_path, summary_path = write_current_results(output_dir, results, grouped)
     print(f"Episode results saved to: {episode_path}")
     print(f"Summary saved to: {summary_path}")
 
